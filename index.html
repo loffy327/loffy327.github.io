@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truyền Thuyết Hắc Ám - Bản Chuẩn</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="auth-modal" class="modal-overlay" style="display: flex; z-index: 999; background: rgba(0,0,0,0.95);">
+        <div class="modal-box" style="max-width: 500px;">
+            <h2 style="color: #ffd700;">HỆ THỐNG MÁY CHỦ ẢO (LOCAL)</h2>
+            <p style="color: #aaa; font-size: 14px; margin-bottom: 20px;">Dữ liệu Đa Tài Khoản được lưu an toàn trực tiếp trên trình duyệt.</p>
+            
+            <input type="text" id="auth-username" placeholder="Tên Đăng Nhập (Ví dụ: admin)">
+            <input type="password" id="auth-password" placeholder="Mật Khẩu">
+            
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px;">
+                <button class="btn-primary" onclick="handleLogin()">ĐĂNG NHẬP</button>
+                <button class="btn-gacha" onclick="handleRegister()">ĐĂNG KÝ MỚI</button>
+            </div>
+            
+            <div style="margin-top: 20px; border-top: 1px solid #555; padding-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <p style="color: #00ffcc; font-size: 14px; margin-bottom: 5px;">Quản lý dữ liệu</p>
+                <button class="btn-danger" onclick="startNewGame()">❌ XÓA TOÀN BỘ DATA (CHƠI LẠI MỚI)</button>
+                <button class="btn-gacha" onclick="exportData()">⬇ XUẤT FILE SAO LƯU (.JSON)</button>
+                <label for="import-file" class="btn-vipshop" style="text-align: center;">⬆ NHẬP FILE SAO LƯU</label>
+                <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
+            </div>
+            <p id="auth-msg" style="color: #ff0055; margin-top: 15px; font-weight: bold;"></p>
+        </div>
+    </div>
+
+    <div id="history-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 style="color: #ffd700;">LỊCH SỬ PHÁT TRIỂN</h2>
+            <div style="max-height: 400px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px;">
+                <div class="history-entry">
+                    <div class="history-date">Patch 8.5 (Hiện Tại)</div>
+                    <div class="history-text"><b>Tối Ưu Hóa:</b> Tách toàn bộ source code thành 3 file riêng biệt (HTML, CSS, JS). Game chạy mượt mà, không còn lỗi biến môi trường. Tướng sự kiện mới nhất: Huyết Nguyệt Ma Tôn.</div>
+                </div>
+            </div>
+            <button class="btn-primary" style="width: 100%; padding: 15px;" onclick="document.getElementById('history-modal').style.display='none'">VÀO GAME</button>
+        </div>
+    </div>
+
+    <div id="screen-home" class="screen active">
+        <div class="top-bar">
+            <h2>TRUYỀN THUYẾT HẮC ÁM</h2>
+            <div style="display: flex; align-items: center;">
+                <div class="vip-badge-ui" id="vip-display-home" onclick="showVipModal()">VIP 0</div>
+                <div class="currency">
+                    K.C: <span class="kc-display">0</span> 💎
+                    <button class="btn-gacha" style="padding: 5px 10px; margin-left: 10px; font-size:14px; background: linear-gradient(90deg, #ff99cc, #ff00ff);" onclick="document.getElementById('code-modal').style.display='flex'">Nhập Code</button>
+                    <button class="btn-primary" style="padding: 5px 10px; margin-left: 10px; font-size:14px;" onclick="showRechargeModal()">Nạp K.C</button>
+                    <button class="btn-danger" style="padding: 5px 10px; margin-left: 10px; font-size:14px;" onclick="location.reload()">Đăng Xuất</button>
+                </div>
+            </div>
+        </div>
+        <div class="home-content">
+            <h1 style="color: #00f2fe; text-shadow: 0 0 20px #00f2fe;">ĐỘI HÌNH HIỆN TẠI</h1>
+            <div class="hero-display" id="current-hero-card">
+                <div class="hero-lvl-badge" id="hero-lvl-txt">Lv.1</div>
+                <div class="hero-rank rank-A" id="hero-rank-txt">A</div>
+                <div class="relic-slot" onclick="openRelicModal()" title="Trang bị Bảo Vật">
+                    <div id="relic-icon-display" class="relic-icon" style="background: none;">❓</div>
+                </div>
+                <div id="hero-portrait-bg" style="position: absolute; top:0; left:0; width:100%; height:100%; border-radius:15px; opacity:0.3; background-size: cover; background-position:center; z-index:0; pointer-events:none;"></div>
+                
+                <div class="hero-avatar rank-A" id="hero-avatar-div" style="background: #00ffff; z-index: 1;"></div>
+                <h2 id="hero-name-txt" style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; text-align: center; z-index: 1;">Chiến Binh</h2>
+                <p style="color: #ccc; margin-top: 10px; text-align:center; font-size: 14px; height: 40px; z-index: 1;" id="hero-desc-txt">Bắn đạn năng lượng cơ bản.</p>
+                <div style="width: 100%; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 10px; margin-top: 15px; font-size: 14px; z-index: 1;">
+                    <div style="color: #00ff00;">Sinh lực (HP): <span id="stat-hp">100</span> <span id="vip-hp-bonus" style="color: #ffd700;"></span></div>
+                    <div style="color: #ff3333;">Sát thương Nộ: <span id="stat-dmg">100%</span> <span id="vip-dmg-bonus" style="color: #ffd700;"></span></div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                <button class="btn-primary" onclick="switchScreen('screen-inventory')">KHO TƯỚNG & BẢO VẬT</button>
+                <button class="btn-gacha" onclick="switchScreen('screen-gacha')">ĐÀI TRIỆU HỒI</button>
+                <button class="btn-vipshop" onclick="openVipShop()">CỬA HÀNG VIP (Y/c VIP 7)</button>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                <button class="btn-danger" style="font-size: 20px; padding: 15px 40px; border-radius: 50px;" onclick="startGame(false)">ĐI BÀI ĐƠN</button>
+                <button class="btn-primary" style="font-size: 20px; padding: 15px 40px; border-radius: 50px; background: linear-gradient(90deg, #9933ff, #ff00ff); box-shadow: 0 0 20px #ff00ff;" onclick="openDualMenu()">DUAL CO-OP</button>
+            </div>
+            <div style="color: #aaa; font-size: 12px; margin-top: 10px;">Gợi ý: Nhấn 'H' để mở Menu Admin (Nếu tài khoản là 'admin')</div>
+        </div>
+    </div>
+
+    <div id="code-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 400px;">
+            <h2 style="color: #ff00ff;">NHẬP MÃ QUÀ TẶNG</h2>
+            <input type="text" id="gift-code-input" placeholder="Nhập mã code tại đây..." style="text-transform: uppercase;">
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button class="btn-primary" onclick="redeemCode()">XÁC NHẬN</button>
+                <button class="btn-danger" onclick="document.getElementById('code-modal').style.display='none'">ĐÓNG</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 900px; border-color: red; box-shadow: 0 0 40px rgba(255,0,0,0.5);">
+            <h2 style="color: red;">ADMIN CONTROL PANEL</h2>
+            <div class="inv-tabs" style="margin-bottom: 20px;">
+                <button class="tab-btn active" id="tab-adm-bxh" onclick="switchAdminTab('bxh')">Bảng Xếp Hạng</button>
+                <button class="tab-btn" id="tab-adm-code" onclick="switchAdminTab('code')">Sinh Code</button>
+                <button class="tab-btn" id="tab-adm-cheat" onclick="switchAdminTab('cheat')">Insta Get</button>
+            </div>
+
+            <div id="admin-bxh" style="display: block; max-height: 50vh; overflow-y: auto;">
+                <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 15px;">
+                    <button class="btn-gacha" onclick="loadLeaderboard('kc')">Xếp Hạng Độ Giàu</button>
+                    <button class="btn-danger" onclick="loadLeaderboard('score')">Xếp Hạng Quái Diệt</button>
+                </div>
+                <table class="admin-table">
+                    <thead><tr><th>Top</th><th>Tài khoản</th><th>Thành tích</th></tr></thead>
+                    <tbody id="admin-bxh-list"></tbody>
+                </table>
+            </div>
+
+            <div id="admin-code" style="display: none;">
+                <p style="color: #fff; margin-bottom: 10px;">Nhập mã Code mới (Chữ in hoa không dấu):</p>
+                <input type="text" id="adm-new-code" placeholder="VÍ DỤ: CODEVIP123">
+                <p style="color: #fff; margin-bottom: 10px;">Loại phần thưởng:</p>
+                <select id="adm-code-type" onchange="updateCodeRewardUI()">
+                    <option value="kc">Kim Cương</option>
+                    <option value="hero">Tướng (A -> SS+)</option>
+                    <option value="relic">Bảo Vật</option>
+                </select>
+                <div id="adm-code-reward-container"><input type="number" id="adm-code-val" placeholder="Số Kim Cương"></div>
+                <button class="btn-primary" style="margin-top: 15px; background: red;" onclick="generateGiftCode()">TẠO LƯU CODE CỤC BỘ</button>
+            </div>
+
+            <div id="admin-cheat" style="display: none;">
+                <p style="color: #00ffcc;">Công cụ dành cho Admin buff acc hiện tại:</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button class="btn-primary" onclick="cheatKC()">+100.000.000 KC</button>
+                    <button class="btn-danger" onclick="cheatAllHeroes()">Mở Khóa Toàn Bộ Tướng Lv20</button>
+                    <button class="btn-gacha" onclick="cheatAllRelics()">Mở Khóa Toàn Bộ Bảo Vật</button>
+                </div>
+            </div>
+
+            <button class="btn-danger close-btn" style="margin-top: 30px;" onclick="document.getElementById('admin-modal').style.display='none'">ĐÓNG</button>
+        </div>
+    </div>
+
+    <div id="dual-modal" class="modal-overlay">
+        <div class="modal-box" style="border-color: #ff00ff; box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);">
+            <h2 style="color: #ff00ff;">THIẾT LẬP DUAL CO-OP</h2>
+            <p style="color: #ff99cc; margin-bottom: 20px; font-size: 14px;">Quái và Boss sẽ x1.5 Máu. AI Tự động né chiêu và tung Nộ.</p>
+            <div style="text-align: left; margin-bottom: 10px; color: #00ffff; font-weight:bold;">Player 1 (Bạn Điều Khiển):</div>
+            <select id="p1-select"></select>
+            <div style="text-align: left; margin-bottom: 10px; color: #ff0055; font-weight:bold; margin-top: 15px;">Player 2 (AI Điều Khiển - IQ 100):</div>
+            <select id="p2-select"></select>
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 30px;">
+                <button class="btn-primary" style="background: linear-gradient(90deg, #ff00ff, #cc00ff);" onclick="startDualGame()">BẮT ĐẦU DUAL</button>
+                <button class="btn-danger" onclick="document.getElementById('dual-modal').style.display='none'">HỦY BỎ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="relic-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 800px;">
+            <h2>CHỌN BẢO VẬT TRANG BỊ</h2>
+            <div class="inventory-grid" id="relic-grid" style="max-height: 50vh; overflow-y: auto;"></div>
+            <button class="btn-danger close-btn" onclick="document.getElementById('relic-modal').style.display='none'">HỦY BỎ</button>
+            <button class="btn-primary" style="margin-left: 10px; margin-top: 20px;" onclick="unequipRelic()">THÁO BẢO VẬT</button>
+        </div>
+    </div>
+
+    <div id="vip-shop-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 800px; border-color: #ff00ff; box-shadow: 0 0 30px rgba(255, 0, 255, 0.4);">
+            <h2 style="color: #ff00ff; text-shadow: 0 0 10px #ff00ff;">CỬA HÀNG CHỢ ĐEN VIP 7+</h2>
+            <div id="vip-timer">Làm mới sau: 10s</div>
+            <div class="currency" style="justify-content: center; margin-bottom: 20px;">K.C: <span class="kc-display">0</span> 💎</div>
+            <div class="shop-grid" id="vip-shop-grid"></div>
+            <div style="margin-top: 20px; display: flex; justify-content: center; gap: 20px;">
+                <button class="btn-gacha" onclick="skipVipTimer()">LÀM MỚI NGAY (100 💎)</button>
+                <button class="btn-danger close-btn" style="margin-top: 0;" onclick="document.getElementById('vip-shop-modal').style.display='none'">THOÁT</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="vip-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h2>ĐẶC QUYỀN VIP TỐI THƯỢNG</h2>
+            <div id="vip-status-text" style="color: yellow; font-size: 20px; font-weight: bold; margin-bottom: 10px;">Cấp VIP hiện tại: 0</div>
+            <p id="vip-progress-text" style="color: #00ffff; margin-bottom: 20px;">Nạp thêm X Kim Cương để đạt VIP 1</p>
+            <div style="text-align: left; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px;">
+                <p>⭐ <b>Cơ chế VIP:</b> Dựa trên tổng số Kim Cương đã nạp.</p>
+                <p>⭐ <b>Mỗi cấp VIP:</b> Tăng <span style="color:#00ff00;">+5% HP Tối đa</span> và <span style="color:#ff3333;">+5% Sát Thương</span>.</p>
+                <p>⭐ <b>VIP 7:</b> Mở khóa Cửa Hàng Chợ Đen bí mật.</p>
+                <p>⭐ <b>VIP 12 (Max):</b> Nhận tổng cộng <span style="color:#ffd700;">+60% Chỉ số toàn diện</span>!</p>
+            </div>
+            <button class="btn-danger" style="margin-top: 20px;" onclick="document.getElementById('vip-modal').style.display='none'">Đóng</button>
+        </div>
+    </div>
+
+    <div id="recharge-modal" class="modal-overlay">
+        <div class="modal-box" style="max-width: 400px;">
+            <h2>NẠP KIM CƯƠNG</h2>
+            <p style="color: #00ffff; font-weight: bold;">Tỷ giá: 1.000.000 VNĐ = 50.000 💎</p>
+            <p>Nhập số VNĐ bạn muốn nạp:</p>
+            <input type="number" id="vnd-input" placeholder="Ví dụ: 10000000" style="width: 100%; padding: 10px; font-size: 18px; margin: 15px 0; border-radius: 5px; text-align:center;">
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button class="btn-primary" onclick="confirmRecharge()">NẠP NGAY</button>
+                <button class="btn-danger" onclick="document.getElementById('recharge-modal').style.display='none'">HỦY</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="gacha-popup" class="modal-overlay">
+        <div class="modal-box" style="background: transparent; border: none; box-shadow: none; max-width: 900px;">
+            <h1 style="color: #f6d365; font-size: 40px; text-shadow: 0 0 20px #f6d365;">KẾT QUẢ TRIỆU HỒI</h1>
+            <div class="gacha-results-grid" id="popup-grid"></div>
+            <button class="btn-primary" onclick="document.getElementById('gacha-popup').style.display = 'none'; updateInventory(); updateUI();">XÁC NHẬN</button>
+        </div>
+    </div>
+
+    <div id="screen-inventory" class="screen">
+        <div class="top-bar">
+            <button class="btn-danger" onclick="switchScreen('screen-home')">⬅ TRANG CHỦ</button>
+            <h2>KHO TƯỚNG VÀ BẢO VẬT</h2>
+            <div class="currency">
+                <span id="coupon-display" style="font-size:14px; margin-right:15px; color:#aaa;"></span>
+                K.C: <span class="kc-display">0</span> 💎
+            </div>
+        </div>
+        <div class="inv-tabs">
+            <button class="tab-btn active" id="tab-normal" onclick="switchInvTab('normal')">CƠ BẢN</button>
+            <button class="tab-btn" id="tab-event" onclick="switchInvTab('event')">SỰ KIỆN</button>
+        </div>
+        <div class="inventory-grid" id="inv-grid" style="overflow-y: auto; max-height: 65vh;"></div>
+    </div>
+
+    <div id="screen-gacha" class="screen">
+        <div class="top-bar">
+            <button class="btn-danger" onclick="switchScreen('screen-home')">⬅ TRANG CHỦ</button>
+            <h2>ĐÀI TRIỆU HỒI</h2>
+            <div class="currency">
+                <span id="coupon-display-gacha" style="font-size:14px; margin-right:15px; color:#aaa;"></span>
+                K.C: <span class="kc-display">0</span> 💎
+            </div>
+        </div>
+        <div class="gacha-content">
+            <div class="summon-altar spin-anim" id="altar"></div>
+            <p style="color: #aaa; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; font-size: 14px; text-align: center; line-height: 1.6;">
+                <span class="event-tag" style="font-size: 26px;">[ TƯỚNG SỰ KIỆN ]</span><br>
+                <span class="rank-SSP-blood" style="font-size: 18px;">HUYẾT NGUYỆT (0.67%)</span> | 
+                <span class="rank-SSP-buddha" style="font-size: 16px;">PHẬT TÔN (0.67%)</span> | 
+                <span class="rank-SSP-kalpa" style="font-size: 16px;">KALPA (0.67%)</span> | 
+                <span class="rank-SS-sukuna" style="font-size: 16px;">SUKUNA (0.67%)</span> | 
+                <span class="rank-SS-gojo" style="font-size: 16px;">GOJO (0.67%)</span>
+                <br>
+                <span style="font-size: 13px; color: #ccc;">SS+ Thường: Ma Thần Cơ Khí, Omni, Time, Thánh Đế (0.375% mỗi tướng)</span><br>
+                <span style="font-size: 13px; color: #ccc;">SS Thường: Lộc Thần, Pha Lê, Bướm, Lily, Rồng, Cổ Thần, Ngân Hà, Cửu Vĩ, Ma Đêm</span><br>
+            </p>
+            <p style="color: #00ffcc; font-size: 14px; margin-top: -10px;">(Tướng Event trùng HOÀN 10💎, KHÔNG +Lv. Tướng thường Trùng +1 Level)</p>
+            <div style="display: flex; gap: 30px; margin-top: 20px;">
+                <button class="btn-gacha" style="padding: 15px 30px;" onclick="rollGacha(1)">QUAY x1</button>
+                <button class="btn-gacha" style="padding: 15px 30px; background: linear-gradient(90deg, #ff00cc, #333399); color: white;" onclick="rollGacha(10)">QUAY x10</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-ui">
+        <div style="background: rgba(0,0,0,0.7); padding: 15px; border-radius: 10px; display: inline-block; pointer-events: auto;">
+            <div style="font-size: 20px; font-weight: bold; color: yellow;">Điểm diệt quái: <span id="score-val">0</span></div>
+            <div style="font-size: 14px; color: #aaa;">Mốc Boss tiếp theo: <span id="next-boss-val">10</span></div>
+            <div class="bar-container"><div id="hp-bar"></div></div>
+            <div class="bar-container"><div id="rage-bar"></div></div>
+            <p style="color:#00ffcc; font-weight: bold; margin-top: 5px; display:none; animation: pulseKalpa 0.5s infinite alternate;" id="rage-hint">⚠️ SPACE / CLICK ĐỂ NỘ ⚠️</p>
+            
+            <div id="awaken-container" style="display: none; margin-top: 10px;">
+                <div style="font-size: 12px; color: #ff0055; font-weight: bold; text-align: center;">TÍCH LŨY THỨC TỈNH (Phím V)</div>
+                <div class="bar-container" style="border-color: #ff0055; height: 15px;"><div id="awaken-bar"></div></div>
+                <p style="color:#ff0055; font-weight: bold; margin-top: 5px; display:none; animation: pulseBlood 0.5s infinite alternate; text-align: center;" id="awaken-hint">⚠️ BẤM 'V' THỨC TỈNH ⚠️</p>
+            </div>
+        </div>
+        
+        <div style="position: absolute; bottom: 20px; left: 20px; color: #fff; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px;">
+            Mẹo: Nhấn phím <b>[ N ]</b> để Nhảy Cấp Boss
+        </div>
+
+        <div id="boss-ui">
+            <h2 id="boss-name" style="color: #ff3300; text-shadow: 0 0 10px red;">ÁC QUỶ VỰC SÂU (Lv 1)</h2>
+            <div id="boss-hp-bar-container"><div id="boss-hp-bar"></div></div>
+        </div>
+
+        <div id="skip-menu">
+            <h2 style="color: #00ffcc; margin-bottom: 15px; text-shadow: 0 0 10px #00ffcc;">NHẢY CẤP BOSS</h2>
+            <p style="margin-bottom: 15px; color: #aaa; font-size: 14px;">Nhập cấp độ Boss bạn muốn đối đầu.</p>
+            <input type="number" id="skip-level-input" placeholder="Ví dụ: 100">
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button class="btn-primary" onclick="executeSkip()">XÁC NHẬN</button>
+                <button class="btn-danger" onclick="toggleSkipMenu()">ĐÓNG</button>
+            </div>
+        </div>
+
+        <button class="btn-danger" style="position: absolute; top: 20px; right: 20px; pointer-events: auto;" onclick="exitGame()">Bỏ cuộc</button>
+    </div>
+
+    <canvas id="gameCanvas" style="display: none;"></canvas>
+
+    <img id="buddha-img" src="https://images.unsplash.com/photo-1590845947376-2638caa89309?auto=format&fit=crop&w=150&q=80" style="display:none;" />
+    <img id="blood-img" src="https://images.unsplash.com/photo-1509927083803-4bd519298ac4?auto=format&fit=crop&w=150&q=80" style="display:none;" />
+    <img id="astralis-img" src="https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=150&q=80" style="display:none;" />
+
+    <script src="script.js"></script>
+</body>
+</html>
