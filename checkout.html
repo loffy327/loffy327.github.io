@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh Toán - BobaTea</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages/checkout.css">
+</head>
+<body>
+  
+  <header class="header">
+    <div class="container header-container">
+      <a href="index.html" class="logo">🧋 <span>BobaTea</span></a>
+      <a href="cart.html" class="text-primary font-bold"><i class="fas fa-arrow-left"></i> Quay lại giỏ hàng</a>
+    </div>
+  </header>
+
+  <main class="main-content section-sm">
+    <div class="container">
+      <h1 class="text-3xl font-heading mb-8 text-center">Thanh Toán</h1>
+      
+      <div class="checkout-layout">
+        <div>
+          <form id="checkout-form">
+            <!-- Thông tin giao hàng -->
+            <div class="checkout-section">
+              <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Thông tin giao hàng</h2>
+              
+              <div class="grid grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label class="form-label">Họ và tên *</label>
+                  <input type="text" name="fullName" class="form-control" required placeholder="Nhập họ tên của bạn">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Số điện thoại *</label>
+                  <input type="tel" name="phone" class="form-control" required placeholder="09xxxxxxx">
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Địa chỉ nhận hàng *</label>
+                <input type="text" name="address" class="form-control" required placeholder="Số nhà, tên đường, phường/xã, quận/huyện...">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Ghi chú cho shipper (Tùy chọn)</label>
+                <textarea name="note" class="form-control" rows="2" placeholder="Ví dụ: Giao giờ hành chính, gọi trước khi giao..."></textarea>
+              </div>
+            </div>
+            
+            <!-- Phương thức thanh toán -->
+            <div class="checkout-section">
+              <h2 class="section-title"><i class="fas fa-credit-card"></i> Phương thức thanh toán</h2>
+              
+              <div class="payment-methods">
+                <label class="payment-method active">
+                  <input type="radio" name="paymentMethod" value="cod" checked>
+                  <i class="fas fa-money-bill-wave text-success text-2xl ml-2 w-10"></i>
+                  <div class="payment-info">
+                    <h4>Thanh toán khi nhận hàng (COD)</h4>
+                    <p>Thanh toán bằng tiền mặt khi shipper giao hàng</p>
+                  </div>
+                </label>
+                
+                <label class="payment-method">
+                  <input type="radio" name="paymentMethod" value="momo">
+                  <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" class="payment-icon" alt="MoMo">
+                  <div class="payment-info">
+                    <h4>Ví điện tử MoMo</h4>
+                    <p>Thanh toán nhanh chóng qua ví MoMo</p>
+                  </div>
+                </label>
+                
+                <label class="payment-method">
+                  <input type="radio" name="paymentMethod" value="banking">
+                  <i class="fas fa-university text-info text-2xl ml-2 w-10"></i>
+                  <div class="payment-info">
+                    <h4>Chuyển khoản ngân hàng</h4>
+                    <p>Quét mã QR qua app ngân hàng của bạn</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block text-xl py-4 mt-6">
+              Hoàn Tất Đặt Hàng <i class="fas fa-check-circle ml-2"></i>
+            </button>
+          </form>
+        </div>
+        
+        <!-- Tổng kết đơn hàng -->
+        <div class="checkout-summary">
+          <h3 class="text-xl font-heading mb-4 border-b pb-4">Tóm Tắt Đơn Hàng</h3>
+          
+          <div class="summary-items" id="summary-items">
+            <!-- Items rendered by JS -->
+          </div>
+          
+          <div class="discount-code mt-4">
+            <input type="text" class="form-control" placeholder="Mã giảm giá (nếu có)">
+            <button class="btn btn-outline">Áp dụng</button>
+          </div>
+          
+          <div class="flex justify-between mb-2">
+            <span class="text-light">Tạm tính</span>
+            <span class="font-bold" id="checkout-subtotal">0 ₫</span>
+          </div>
+          <div class="flex justify-between mb-4 pb-4 border-b">
+            <span class="text-light">Phí vận chuyển</span>
+            <span class="font-bold" id="checkout-shipping">0 ₫</span>
+          </div>
+          <div class="flex justify-between text-xl font-bold">
+            <span>Tổng cộng</span>
+            <span class="text-primary" id="checkout-total">0 ₫</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="success-modal">
+    <div class="modal-content text-center p-8">
+      <i class="fas fa-check-circle text-success text-6xl mb-4"></i>
+      <h2 class="text-2xl font-heading mb-2">Đặt Hàng Thành Công!</h2>
+      <p class="mb-4 text-light">Mã đơn hàng của bạn: <strong class="text-primary" id="order-id-display">BBA-123</strong></p>
+      <p class="mb-6">Cảm ơn bạn đã đặt hàng tại BobaTea. Chúng tôi đang chuẩn bị những thức uống thơm ngon nhất cho bạn.</p>
+      <button class="btn btn-primary" onclick="window.location.href='order-tracking.html?id=' + document.getElementById('order-id-display').textContent">
+        Theo Dõi Đơn Hàng
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { cart } from './js/modules/cart.js';
+    import { formatVND } from './js/modules/currency.js';
+    import { initCheckout } from './js/modules/checkout.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Redirect if cart is empty
+      if (cart.items.length === 0) {
+        window.location.href = 'cart.html';
+        return;
+      }
+
+      // Render summary items
+      const container = document.getElementById('summary-items');
+      let html = '';
+      
+      cart.items.forEach(item => {
+        html += `
+          <div class="summary-item">
+            <div class="summary-item-info">
+              <div class="item-qty-badge">${item.quantity}</div>
+              <div class="item-name-meta">
+                <h5>${item.name}</h5>
+                <p>Size ${item.options.size.toUpperCase()}</p>
+              </div>
+            </div>
+            <div class="summary-item-price">${formatVND(item.price * item.quantity)}</div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+
+      // Update totals
+      document.getElementById('checkout-subtotal').textContent = formatVND(cart.getSubtotal());
+      document.getElementById('checkout-shipping').textContent = formatVND(cart.getShippingFee());
+      document.getElementById('checkout-total').textContent = formatVND(cart.getTotalPrice());
+
+      // Init checkout logic
+      initCheckout();
+    });
+  </script>
+</body>
+</html>
