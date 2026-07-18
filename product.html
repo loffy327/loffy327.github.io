@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi Tiết Sản Phẩm - BobaTea</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages/product.css">
+</head>
+<body>
+  
+  <header class="header">
+    <div class="container header-container">
+      <a href="index.html" class="logo">🧋 <span>BobaTea</span></a>
+      <nav class="nav">
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Trang Chủ</a></li>
+          <li><a href="menu.html" class="nav-link active">Thực Đơn</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button id="theme-toggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
+          <a href="cart.html" class="cart-btn"><i class="fas fa-shopping-bag"></i><span class="cart-badge" style="display: none;">0</span></a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content section-sm">
+    <div class="container">
+      <nav class="mb-6 text-sm">
+        <a href="index.html" class="text-light">Trang Chủ</a> &rsaquo; 
+        <a href="menu.html" class="text-light">Thực Đơn</a> &rsaquo; 
+        <span class="text-primary font-bold" id="breadcrumb-name">Đang tải...</span>
+      </nav>
+
+      <div class="product-detail-layout" id="product-detail-container">
+        <!-- Rendered by JS -->
+        <div class="text-center w-full py-12"><div class="loader"></div></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { getProductById, toppings } from './js/data/products.js';
+    import { cart } from './js/modules/cart.js';
+    import { formatVND } from './js/modules/currency.js';
+    import './js/app.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+      
+      const product = getProductById(productId);
+      if (!product) {
+        document.getElementById('product-detail-container').innerHTML = `
+          <div class="text-center w-full py-12">
+            <h2>Sản phẩm không tồn tại</h2>
+            <a href="menu.html" class="btn btn-primary mt-4">Quay lại thực đơn</a>
+          </div>
+        `;
+        return;
+      }
+
+      document.getElementById('breadcrumb-name').textContent = product.name;
+      document.title = `${product.name} - BobaTea`;
+
+      let selectedSize = 'm';
+      let selectedIce = '100';
+      let selectedSugar = '100';
+      let qty = 1;
+      
+      const renderDetail = () => {
+        let toppingHtml = '';
+        toppings.forEach(t => {
+          toppingHtml += `
+            <label class="topping-item">
+              <div class="topping-checkbox">
+                <input type="checkbox" name="topping" value="${t.id}" data-price="${t.price}" data-name="${t.name}">
+                <span>${t.name}</span>
+              </div>
+              <span class="text-primary">+${formatVND(t.price)}</span>
+            </label>
+          `;
+        });
+
+        const html = `
+          <div class="product-gallery reveal">
+            <div class="main-image-container">
+              <img src="${product.image}" alt="${product.name}" id="main-img" onerror="this.src='https://via.placeholder.com/400?text=Image'">
+            </div>
+          </div>
+          
+          <div class="product-info reveal animate-slide-right">
+            <h1>${product.name}</h1>
+            
+            <div class="product-meta">
+              <div class="rating-stars text-lg">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+              </div>
+              <span>${product.rating} (${product.reviews} đánh giá)</span>
+              <span>|</span>
+              <span class="text-success"><i class="fas fa-check-circle"></i> Còn hàng</span>
+            </div>
+            
+            <div class="product-price-large" id="display-price">${formatVND(product.prices.m)}</div>
+            
+            <p class="mb-8 text-lg">${product.description}</p>
+            
+            <div class="option-group">
+              <div class="option-title"><span>Chọn Size</span> <span class="text-sm font-normal text-light">Bắt buộc</span></div>
+              <div class="option-grid size-options">
+                <button class="option-btn" data-val="s">Size S<br><span class="text-xs text-light">${formatVND(product.prices.s)}</span></button>
+                <button class="option-btn selected" data-val="m">Size M<br><span class="text-xs text-light">${formatVND(product.prices.m)}</span></button>
+                <button class="option-btn" data-val="l">Size L<br><span class="text-xs text-light">${formatVND(product.prices.l)}</span></button>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-6">
+              <div class="option-group">
+                <div class="option-title"><span>Lượng Đá</span></div>
+                <div class="option-grid ice-options" style="grid-template-columns: 1fr 1fr">
+                  <button class="option-btn selected" data-val="100">100% Đá</button>
+                  <button class="option-btn" data-val="50">50% Đá</button>
+                  <button class="option-btn" data-val="30">30% Đá</button>
+                  <button class="option-btn" data-val="0">Không Đá</button>
+                </div>
+              </div>
+              
+              <div class="option-group">
+                <div class="option-title"><span>Lượng Đường</span></div>
+                <div class="option-grid sugar-options" style="grid-template-columns: 1fr 1fr">
+                  <button class="option-btn selected" data-val="100">100% Đường</button>
+                  <button class="option-btn" data-val="70">70% Đường</button>
+                  <button class="option-btn" data-val="50">50% Đường</button>
+                  <button class="option-btn" data-val="30">30% Đường</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="option-group mt-4">
+              <div class="option-title"><span>Topping (Tùy chọn)</span></div>
+              <div class="topping-list">
+                ${toppingHtml}
+              </div>
+            </div>
+            
+            <div class="action-area">
+              <div class="quantity-selector">
+                <button class="qty-btn" id="qty-minus">-</button>
+                <input type="text" class="qty-input" id="qty-val" value="1" readonly>
+                <button class="qty-btn" id="qty-plus">+</button>
+              </div>
+              
+              <button class="btn btn-primary add-to-cart-btn" id="btn-add-cart">
+                <i class="fas fa-cart-plus mr-2"></i> Thêm Vào Giỏ Hàng - <span id="btn-price">${formatVND(product.prices.m)}</span>
+              </button>
+            </div>
+          </div>
+        `;
+        
+        document.getElementById('product-detail-container').innerHTML = html;
+        attachEvents();
+      };
+      
+      const updatePrice = () => {
+        let currentPrice = product.prices[selectedSize];
+        
+        // Add topping prices
+        const checkedToppings = document.querySelectorAll('input[name="topping"]:checked');
+        checkedToppings.forEach(t => {
+          currentPrice += parseInt(t.dataset.price);
+        });
+        
+        const total = currentPrice * qty;
+        
+        document.getElementById('display-price').textContent = formatVND(currentPrice);
+        document.getElementById('btn-price').textContent = formatVND(total);
+      };
+      
+      const attachEvents = () => {
+        // Size options
+        document.querySelectorAll('.size-options .option-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.size-options .option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedSize = btn.dataset.val;
+            updatePrice();
+          });
+        });
+        
+        // Ice options
+        document.querySelectorAll('.ice-options .option-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.ice-options .option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedIce = btn.dataset.val;
+          });
+        });
+        
+        // Sugar options
+        document.querySelectorAll('.sugar-options .option-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.sugar-options .option-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedSugar = btn.dataset.val;
+          });
+        });
+        
+        // Topping changes
+        document.querySelectorAll('input[name="topping"]').forEach(cb => {
+          cb.addEventListener('change', updatePrice);
+        });
+        
+        // Quantity
+        document.getElementById('qty-minus').addEventListener('click', () => {
+          if (qty > 1) {
+            qty--;
+            document.getElementById('qty-val').value = qty;
+            updatePrice();
+          }
+        });
+        
+        document.getElementById('qty-plus').addEventListener('click', () => {
+          if (qty < 20) {
+            qty++;
+            document.getElementById('qty-val').value = qty;
+            updatePrice();
+          }
+        });
+        
+        // Add to cart
+        document.getElementById('btn-add-cart').addEventListener('click', () => {
+          const selectedToppings = Array.from(document.querySelectorAll('input[name="topping"]:checked')).map(t => ({
+            id: t.value,
+            name: t.dataset.name,
+            price: parseInt(t.dataset.price)
+          }));
+          
+          cart.addItem(product, qty, {
+            size: selectedSize,
+            ice: selectedIce,
+            sugar: selectedSugar,
+            selectedToppings
+          });
+        });
+      };
+      
+      renderDetail();
+    });
+  </script>
+</body>
+</html>

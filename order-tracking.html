@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tra Cứu Đơn Hàng - BobaTea</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <style>
+    .tracking-timeline {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin: var(--spacing-12) 0;
+    }
+    .tracking-timeline::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 10%;
+      right: 10%;
+      height: 4px;
+      background: #eaeaea;
+      z-index: 1;
+    }
+    [data-theme="dark"] .tracking-timeline::before { background: #333; }
+    
+    .timeline-step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 25%;
+    }
+    
+    .step-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #eaeaea;
+      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-3);
+      transition: all var(--transition-normal);
+    }
+    [data-theme="dark"] .step-icon { background: #333; }
+    
+    .step-text {
+      font-weight: 600;
+      color: var(--color-text-light);
+    }
+    
+    .timeline-step.active .step-icon {
+      background: var(--color-primary);
+      color: white;
+      box-shadow: 0 0 0 5px var(--color-primary-light);
+    }
+    .timeline-step.active .step-text {
+      color: var(--color-primary);
+    }
+    
+    .order-details-card {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-8);
+      box-shadow: var(--shadow-sm);
+    }
+    [data-theme="dark"] .order-details-card { background: var(--color-dark-lighter); }
+  </style>
+</head>
+<body>
+  
+  <header class="header">
+    <div class="container header-container">
+      <a href="index.html" class="logo">🧋 <span>BobaTea</span></a>
+      <nav class="nav">
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Trang Chủ</a></li>
+          <li><a href="order-tracking.html" class="nav-link active">Tra Cứu Đơn</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button id="theme-toggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content section-sm">
+    <div class="container max-w-3xl mx-auto" style="max-width: 800px;">
+      <h1 class="text-3xl font-heading mb-6 text-center">Tra Cứu Đơn Hàng</h1>
+      
+      <div class="flex gap-4 justify-center mb-10">
+        <input type="text" id="order-id-input" class="form-control" placeholder="Nhập mã đơn hàng (VD: BBA-123456)" style="max-width: 400px;">
+        <button id="track-btn" class="btn btn-primary"><i class="fas fa-search"></i> Tra cứu</button>
+      </div>
+      
+      <div id="tracking-result" class="hidden">
+        <div class="order-details-card">
+          <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+            <div>
+              <h2 class="text-xl m-0">Đơn hàng: <span id="display-order-id" class="text-primary font-bold"></span></h2>
+              <p class="text-sm text-light m-0 mt-1" id="display-date"></p>
+            </div>
+            <div id="display-status-badge" class="badge"></div>
+          </div>
+          
+          <div class="tracking-timeline" id="timeline">
+            <!-- Rendered by JS -->
+          </div>
+          
+          <h3 class="text-lg mt-8 mb-4">Chi tiết đơn hàng</h3>
+          <div id="order-items-list">
+            <!-- Rendered by JS -->
+          </div>
+          
+          <div class="border-t pt-4 mt-4 flex justify-between font-bold text-xl">
+            <span>Tổng thanh toán:</span>
+            <span id="display-total" class="text-primary"></span>
+          </div>
+        </div>
+      </div>
+      
+      <div id="not-found-msg" class="text-center text-light hidden mt-10">
+        <i class="fas fa-search text-5xl mb-4 opacity-50"></i>
+        <h3 class="text-xl">Không tìm thấy đơn hàng</h3>
+        <p>Vui lòng kiểm tra lại mã đơn hàng của bạn.</p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { orderManager } from './js/modules/order.js';
+    import { formatVND } from './js/modules/currency.js';
+    import './js/app.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const idParam = urlParams.get('id');
+      
+      if (idParam) {
+        document.getElementById('order-id-input').value = idParam;
+        trackOrder(idParam);
+      }
+      
+      document.getElementById('track-btn').addEventListener('click', () => {
+        const id = document.getElementById('order-id-input').value.trim();
+        if (id) trackOrder(id);
+      });
+      
+      function trackOrder(id) {
+        const order = orderManager.getOrderById(id);
+        const resultDiv = document.getElementById('tracking-result');
+        const notFoundDiv = document.getElementById('not-found-msg');
+        
+        if (!order) {
+          resultDiv.classList.add('hidden');
+          notFoundDiv.classList.remove('hidden');
+          return;
+        }
+        
+        notFoundDiv.classList.add('hidden');
+        resultDiv.classList.remove('hidden');
+        
+        document.getElementById('display-order-id').textContent = order.id;
+        document.getElementById('display-date').textContent = new Date(order.createdAt).toLocaleString('vi-VN');
+        
+        // Timeline
+        const states = ['pending', 'processing', 'completed'];
+        const stateLabels = ['Chờ xử lý', 'Đang pha chế', 'Đã hoàn thành'];
+        const stateIcons = ['fa-file-invoice', 'fa-blender', 'fa-check-circle'];
+        
+        let timelineHtml = '';
+        let currentIndex = states.indexOf(order.status);
+        
+        if (order.status === 'cancelled') {
+          timelineHtml = `
+            <div class="w-full text-center text-error py-8">
+              <i class="fas fa-times-circle text-5xl mb-4"></i>
+              <h3 class="text-2xl">Đơn hàng đã bị hủy</h3>
+            </div>
+          `;
+          document.getElementById('display-status-badge').className = 'badge status-cancelled';
+          document.getElementById('display-status-badge').textContent = 'Đã hủy';
+        } else {
+          for (let i = 0; i < 3; i++) {
+            const isActive = i <= currentIndex ? 'active' : '';
+            timelineHtml += `
+              <div class="timeline-step ${isActive}">
+                <div class="step-icon"><i class="fas ${stateIcons[i]}"></i></div>
+                <span class="step-text">${stateLabels[i]}</span>
+              </div>
+            `;
+          }
+          document.getElementById('display-status-badge').className = `badge status-${order.status}`;
+          document.getElementById('display-status-badge').textContent = stateLabels[currentIndex];
+        }
+        
+        document.getElementById('timeline').innerHTML = timelineHtml;
+        
+        // Items
+        let itemsHtml = '';
+        order.items.forEach(item => {
+          itemsHtml += `
+            <div class="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+              <div class="flex items-center gap-3">
+                <span class="font-bold text-primary bg-primary-light w-8 h-8 rounded-full flex items-center justify-center">${item.quantity}x</span>
+                <div>
+                  <h4 class="m-0 text-base">${item.name}</h4>
+                  <p class="m-0 text-xs text-light">Size ${item.options.size.toUpperCase()}</p>
+                </div>
+              </div>
+              <div class="font-bold">${formatVND(item.price * item.quantity)}</div>
+            </div>
+          `;
+        });
+        document.getElementById('order-items-list').innerHTML = itemsHtml;
+        document.getElementById('display-total').textContent = formatVND(order.total);
+      }
+    });
+  </script>
+</body>
+</html>

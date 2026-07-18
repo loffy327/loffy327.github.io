@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thực Đơn - BobaTea</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages/menu.css">
+</head>
+<body>
+  
+  <!-- Header (Same as index.html) -->
+  <header class="header">
+    <div class="container header-container">
+      <a href="index.html" class="logo">🧋 <span>BobaTea</span></a>
+      <nav class="nav">
+        <ul class="nav-links">
+          <li><a href="index.html" class="nav-link">Trang Chủ</a></li>
+          <li><a href="menu.html" class="nav-link active">Thực Đơn</a></li>
+          <li><a href="order-tracking.html" class="nav-link">Tra Cứu Đơn</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button id="theme-toggle" class="theme-toggle"><i class="fas fa-moon"></i></button>
+          <a href="cart.html" class="cart-btn"><i class="fas fa-shopping-bag"></i><span class="cart-badge" style="display: none;">0</span></a>
+          <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content section-sm">
+    <div class="container">
+      <div class="text-center mb-10 reveal">
+        <h1 class="text-4xl font-heading mb-2">Thực Đơn Của Chúng Tôi</h1>
+        <p class="text-light">Lựa chọn thức uống yêu thích của bạn</p>
+      </div>
+
+      <div class="menu-layout">
+        <!-- Sidebar Filter -->
+        <aside class="menu-sidebar reveal animate-slide-right">
+          <div class="card p-6">
+            <div class="filter-group">
+              <h3 class="filter-title">Danh Mục</h3>
+              <div class="category-list" id="category-filter">
+                <div class="category-item active" data-id="all">
+                  <span>Tất cả</span>
+                  <span class="category-count" id="count-all">0</span>
+                </div>
+                <!-- Categories rendered by JS -->
+              </div>
+            </div>
+            
+            <div class="filter-group mt-8">
+              <h3 class="filter-title">Mức Giá</h3>
+              <div class="price-range-slider">
+                <input type="range" min="20000" max="100000" step="5000" value="100000" class="w-full" id="price-slider">
+                <div class="flex justify-between mt-2 text-sm text-light">
+                  <span>20K</span>
+                  <span id="price-display" class="font-bold text-primary">100K</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Product Grid -->
+        <section class="menu-content">
+          <div class="menu-topbar reveal">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="search-input" placeholder="Tìm kiếm đồ uống...">
+            </div>
+            
+            <div class="sort-box">
+              <label for="sort-select" class="text-sm">Sắp xếp:</label>
+              <select id="sort-select">
+                <option value="default">Mặc định</option>
+                <option value="price-asc">Giá: Thấp đến cao</option>
+                <option value="price-desc">Giá: Cao đến thấp</option>
+                <option value="name-asc">Tên: A-Z</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-6" id="products-grid">
+            <!-- Products rendered by JS -->
+          </div>
+          
+          <div id="empty-state" class="empty-state hidden">
+            <i class="fas fa-search"></i>
+            <h3>Không tìm thấy sản phẩm</h3>
+            <p>Vui lòng thử tìm kiếm với từ khóa hoặc bộ lọc khác.</p>
+            <button class="btn btn-primary mt-4" id="reset-filter-btn">Xóa bộ lọc</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container text-center">
+      <p>&copy; 2023 BobaTea. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { products, categories } from './js/data/products.js';
+    import { createProductCard, setupQuickAdd } from './js/modules/product.js';
+    import './js/app.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let filteredProducts = [...products];
+      let currentCategory = 'all';
+      
+      const grid = document.getElementById('products-grid');
+      const emptyState = document.getElementById('empty-state');
+      
+      // Init Categories
+      const catList = document.getElementById('category-filter');
+      document.getElementById('count-all').textContent = products.length;
+      
+      let catHtml = '';
+      categories.forEach(cat => {
+        const count = products.filter(p => p.categoryId === cat.id).length;
+        catHtml += `
+          <div class="category-item" data-id="${cat.id}">
+            <span>${cat.icon} ${cat.name}</span>
+            <span class="category-count">${count}</span>
+          </div>
+        `;
+      });
+      catList.innerHTML += catHtml;
+
+      // Render Products function
+      const renderProducts = () => {
+        if (filteredProducts.length === 0) {
+          grid.style.display = 'none';
+          emptyState.classList.remove('hidden');
+          return;
+        }
+        
+        grid.style.display = 'grid';
+        emptyState.classList.add('hidden');
+        
+        let html = '';
+        filteredProducts.forEach(p => {
+          html += createProductCard(p);
+        });
+        grid.innerHTML = html;
+        setupQuickAdd(grid);
+      };
+
+      // Filter by Category
+      catList.addEventListener('click', (e) => {
+        const item = e.target.closest('.category-item');
+        if (!item) return;
+        
+        document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+        item.classList.add('active');
+        
+        currentCategory = item.dataset.id;
+        applyFilters();
+      });
+
+      // Search
+      const searchInput = document.getElementById('search-input');
+      searchInput.addEventListener('input', (e) => {
+        applyFilters();
+      });
+
+      // Sort
+      const sortSelect = document.getElementById('sort-select');
+      sortSelect.addEventListener('change', () => {
+        applyFilters();
+      });
+
+      // Price Filter
+      const priceSlider = document.getElementById('price-slider');
+      const priceDisplay = document.getElementById('price-display');
+      priceSlider.addEventListener('input', (e) => {
+        priceDisplay.textContent = (e.target.value / 1000) + 'K';
+        applyFilters();
+      });
+
+      const applyFilters = () => {
+        const kw = searchInput.value.toLowerCase();
+        const maxPrice = parseInt(priceSlider.value);
+        const sortMode = sortSelect.value;
+        
+        filteredProducts = products.filter(p => {
+          const matchCat = currentCategory === 'all' || p.categoryId === currentCategory;
+          const matchKw = p.name.toLowerCase().includes(kw) || p.description.toLowerCase().includes(kw);
+          const matchPrice = p.prices.m <= maxPrice; // filter by size M price
+          
+          return matchCat && matchKw && matchPrice;
+        });
+        
+        // Sort
+        if (sortMode === 'price-asc') {
+          filteredProducts.sort((a, b) => a.prices.m - b.prices.m);
+        } else if (sortMode === 'price-desc') {
+          filteredProducts.sort((a, b) => b.prices.m - a.prices.m);
+        } else if (sortMode === 'name-asc') {
+          filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        renderProducts();
+      };
+
+      // Check URL params for category
+      const urlParams = new URLSearchParams(window.location.search);
+      const catParam = urlParams.get('category');
+      if (catParam) {
+        const item = document.querySelector(`.category-item[data-id="${catParam}"]`);
+        if (item) item.click();
+      } else {
+        renderProducts();
+      }
+
+      document.getElementById('reset-filter-btn').addEventListener('click', () => {
+        searchInput.value = '';
+        priceSlider.value = 100000;
+        priceDisplay.textContent = '100K';
+        sortSelect.value = 'default';
+        document.querySelector('.category-item[data-id="all"]').click();
+      });
+    });
+  </script>
+</body>
+</html>
