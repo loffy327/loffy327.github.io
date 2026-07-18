@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Đơn Hàng - BobaTea Admin</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/admin.css">
+</head>
+<body class="admin-body">
+  
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <a href="../index.html" class="logo text-xl">🧋 <span>BobaTea Admin</span></a>
+    </div>
+    
+    <nav class="admin-nav">
+      <a href="index.html" class="admin-nav-item">
+        <i class="fas fa-home"></i> Tổng Quan
+      </a>
+      <a href="orders.html" class="admin-nav-item active">
+        <i class="fas fa-shopping-cart"></i> Đơn Hàng
+      </a>
+      <a href="products.html" class="admin-nav-item">
+        <i class="fas fa-box"></i> Sản Phẩm
+      </a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-header">
+      <h1 class="text-2xl m-0 font-heading">Quản Lý Đơn Hàng</h1>
+    </header>
+
+    <div class="admin-card">
+      <div class="card-header">
+        <div class="flex gap-4 items-center">
+          <select id="status-filter" class="form-control" style="width: 200px;">
+            <option value="all">Tất cả trạng thái</option>
+            <option value="pending">Chờ xử lý</option>
+            <option value="processing">Đang pha chế</option>
+            <option value="completed">Đã hoàn thành</option>
+            <option value="cancelled">Đã hủy</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Mã Đơn</th>
+              <th>Khách Hàng</th>
+              <th>Tổng Tiền</th>
+              <th>Trạng Thái</th>
+              <th>Thời Gian Đặt</th>
+              <th>Cập Nhật</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { orderManager } from '../js/modules/order.js';
+    import { formatVND } from '../js/modules/currency.js';
+    import { toast } from '../js/modules/notification.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      const renderOrders = (filterStatus = 'all') => {
+        const tbody = document.getElementById('orders-tbody');
+        let orders = orderManager.orders;
+        
+        if (filterStatus !== 'all') {
+          orders = orders.filter(o => o.status === filterStatus);
+        }
+        
+        if (orders.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-light">Không có đơn hàng nào</td></tr>';
+          return;
+        }
+
+        let html = '';
+        orders.forEach(o => {
+          let statusClass = '';
+          switch(o.status) {
+            case 'pending': statusClass = 'status-pending'; break;
+            case 'processing': statusClass = 'status-processing'; break;
+            case 'completed': statusClass = 'status-completed'; break;
+            case 'cancelled': statusClass = 'status-cancelled'; break;
+          }
+          
+          const date = new Date(o.createdAt);
+          
+          html += `
+            <tr>
+              <td><strong>${o.id}</strong></td>
+              <td>${o.customer.fullName}<br><span class="text-xs text-light">${o.customer.phone}</span></td>
+              <td class="font-bold text-primary">${formatVND(o.total)}</td>
+              <td>
+                <select class="form-control status-select ${statusClass}" data-id="${o.id}" style="padding: 4px; font-size: 0.875rem;">
+                  <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>Chờ xử lý</option>
+                  <option value="processing" ${o.status === 'processing' ? 'selected' : ''}>Đang pha</option>
+                  <option value="completed" ${o.status === 'completed' ? 'selected' : ''}>Hoàn thành</option>
+                  <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>Đã hủy</option>
+                </select>
+              </td>
+              <td class="text-sm">${date.toLocaleTimeString()} <br> ${date.toLocaleDateString('vi-VN')}</td>
+              <td>
+                <button class="btn btn-outline btn-sm" onclick="alert('Chi tiết đơn hàng:\n${o.items.map(i => i.quantity + 'x ' + i.name).join(', ')}')">
+                  <i class="fas fa-eye"></i> Chi tiết
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+        
+        tbody.innerHTML = html;
+        
+        // Attach change event
+        document.querySelectorAll('.status-select').forEach(select => {
+          select.addEventListener('change', (e) => {
+            const id = e.target.dataset.id;
+            const newStatus = e.target.value;
+            orderManager.updateOrderStatus(id, newStatus);
+            toast.success(`Cập nhật trạng thái đơn ${id} thành công`);
+            
+            // Re-render to update colors
+            renderOrders(document.getElementById('status-filter').value);
+          });
+        });
+      };
+      
+      renderOrders();
+
+      document.getElementById('status-filter').addEventListener('change', (e) => {
+        renderOrders(e.target.value);
+      });
+    });
+  </script>
+</body>
+</html>

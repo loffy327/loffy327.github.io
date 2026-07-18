@@ -3,254 +3,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BobaTea - Trà Sữa Đậm Vị</title>
-  <meta name="description" content="Thương hiệu trà sữa BobaTea - Thưởng thức hương vị trà sữa trân châu đường đen, matcha và trà trái cây thanh mát.">
+  <title>Admin Dashboard - BobaTea</title>
   
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- CSS Styles -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/animations.css">
-  <link rel="stylesheet" href="css/pages/home.css">
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/admin.css">
 </head>
-<body>
+<body class="admin-body">
   
-  <!-- Header -->
-  <header class="header">
-    <div class="container header-container">
-      <a href="index.html" class="logo">
-        🧋 <span>BobaTea</span>
-      </a>
-      
-      <nav class="nav">
-        <ul class="nav-links">
-          <li><a href="index.html" class="nav-link active">Trang Chủ</a></li>
-          <li><a href="menu.html" class="nav-link">Thực Đơn</a></li>
-          <li><a href="#about" class="nav-link">Về Chúng Tôi</a></li>
-          <li><a href="order-tracking.html" class="nav-link">Tra Cứu Đơn</a></li>
-        </ul>
-        
-        <div class="nav-actions">
-          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark Mode">
-            <i class="fas fa-moon"></i>
-          </button>
-          
-          <a href="cart.html" class="cart-btn" aria-label="Giỏ hàng">
-            <i class="fas fa-shopping-bag"></i>
-            <span class="cart-badge" style="display: none;">0</span>
-          </a>
-          
-          <button class="mobile-menu-btn" aria-label="Menu">
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
-      </nav>
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <a href="../index.html" class="logo text-xl">🧋 <span>BobaTea Admin</span></a>
     </div>
-  </header>
+    
+    <nav class="admin-nav">
+      <a href="index.html" class="admin-nav-item active">
+        <i class="fas fa-home"></i> Tổng Quan
+      </a>
+      <a href="orders.html" class="admin-nav-item">
+        <i class="fas fa-shopping-cart"></i> Đơn Hàng
+      </a>
+      <a href="products.html" class="admin-nav-item">
+        <i class="fas fa-box"></i> Sản Phẩm
+      </a>
+      <a href="#" class="admin-nav-item">
+        <i class="fas fa-users"></i> Khách Hàng
+      </a>
+      <a href="#" class="admin-nav-item">
+        <i class="fas fa-chart-bar"></i> Báo Cáo
+      </a>
+    </nav>
+    
+    <div class="p-6">
+      <a href="../index.html" class="btn btn-outline btn-block"><i class="fas fa-external-link-alt"></i> Xem Website</a>
+    </div>
+  </aside>
 
   <!-- Main Content -->
-  <main class="main-content">
-    
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="container">
-        <div class="grid grid-cols-2 items-center">
-          <div class="hero-content reveal">
-            <h1 class="hero-title">Đậm vị trà,<br><span>Ngọt ngào vị sữa</span></h1>
-            <p class="hero-subtitle">Thưởng thức hương vị trà sữa chuẩn Đài Loan với trân châu đường đen dẻo thơm nấu mới mỗi ngày.</p>
-            <div class="flex gap-4">
-              <a href="menu.html" class="btn btn-primary">Đặt Hàng Ngay <i class="fas fa-arrow-right"></i></a>
-              <a href="#popular" class="btn btn-outline">Xem Bestseller</a>
-            </div>
-          </div>
-          
-          <div class="hero-image-wrapper reveal animate-slide-left">
-            <div class="hero-blob"></div>
-            <img src="assets/images/tra-sua-tran-chau-duong-den.png" alt="Trà sữa trân châu đường đen" class="hero-image animate-float" onerror="this.src='https://via.placeholder.com/500x600?text=Bubble+Tea'">
-            
-            <div class="floating-badge badge-top animate-float-delay">
-              <span class="text-3xl">✨</span>
-              <div>
-                <strong>Best Seller</strong>
-                <p class="text-sm text-light m-0">Trân châu đường đen</p>
-              </div>
-            </div>
-            
-            <div class="floating-badge badge-bottom animate-float">
-              <span class="text-3xl">🌿</span>
-              <div>
-                <strong>100%</strong>
-                <p class="text-sm text-light m-0">Trà tự nhiên</p>
-              </div>
-            </div>
-          </div>
-        </div>
+  <main class="admin-main">
+    <header class="admin-header">
+      <div class="flex items-center gap-4">
+        <button class="mobile-menu-btn d-lg-none" id="sidebar-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="text-2xl m-0 font-heading">Dashboard</h1>
       </div>
-    </section>
-
-    <!-- Categories Section -->
-    <section class="section bg-light">
-      <div class="container">
-        <div class="text-center reveal">
-          <h2 class="text-3xl font-heading mb-2">Khám Phá Hương Vị</h2>
-          <p class="text-light mb-10">Danh mục sản phẩm đa dạng từ BobaTea</p>
-        </div>
-        
-        <div class="grid grid-cols-4 gap-6" id="home-categories">
-          <!-- Categories will be rendered here -->
-        </div>
+      
+      <div class="admin-user">
+        <button id="theme-toggle" class="theme-toggle mr-4"><i class="fas fa-moon"></i></button>
+        <span class="font-bold">Admin</span>
+        <div class="admin-avatar">A</div>
       </div>
-    </section>
+    </header>
 
-    <!-- Popular Products Section -->
-    <section id="popular" class="section">
-      <div class="container">
-        <div class="flex justify-between items-center mb-10 reveal">
-          <div>
-            <h2 class="text-3xl font-heading mb-2">Được Yêu Thích Nhất</h2>
-            <p class="text-light m-0">Những món đồ uống không thể bỏ qua</p>
-          </div>
-          <a href="menu.html" class="btn btn-outline">Xem tất cả</a>
-        </div>
-        
-        <div class="grid grid-cols-4 gap-6" id="popular-products">
-          <!-- Popular products will be rendered here -->
-        </div>
-      </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="section about-section">
-      <div class="container">
-        <div class="grid grid-cols-2 gap-12 items-center">
-          <div class="reveal animate-slide-right">
-            <img src="assets/images/store.png" alt="Không gian BobaTea" class="rounded-xl shadow-lg" onerror="this.src='https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=800&q=80'">
-          </div>
-          
-          <div class="about-text reveal">
-            <h2 class="text-4xl font-heading mb-4 text-white">Câu chuyện của BobaTea</h2>
-            <p class="text-gray-300 mb-6">Chúng tôi bắt đầu với một niềm đam mê mãnh liệt: mang đến những ly trà sữa hoàn hảo nhất. Tại BobaTea, mỗi nguyên liệu đều được tuyển chọn kỹ lưỡng.</p>
-            
-            <div class="feature-list">
-              <div class="feature-item">
-                <i class="fas fa-leaf feature-icon"></i>
-                <div>
-                  <h4 class="text-lg text-white mb-1">Trà thượng hạng</h4>
-                  <p class="text-sm text-gray-400">Lá trà được thu hoạch thủ công từ những đồi trà danh tiếng.</p>
-                </div>
-              </div>
-              <div class="feature-item">
-                <i class="fas fa-fire feature-icon"></i>
-                <div>
-                  <h4 class="text-lg text-white mb-1">Trân châu nấu mới</h4>
-                  <p class="text-sm text-gray-400">Nấu liên tục mỗi 4 giờ, đảm bảo độ mềm dẻo hoàn hảo.</p>
-                </div>
-              </div>
-              <div class="feature-item">
-                <i class="fas fa-heart feature-icon"></i>
-                <div>
-                  <h4 class="text-lg text-white mb-1">Pha chế bằng cả trái tim</h4>
-                  <p class="text-sm text-gray-400">Công thức độc quyền tạo nên sự khác biệt trong từng ngụm.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <a href="index.html" class="logo footer-logo text-white">
-            🧋 <span>BobaTea</span>
-          </a>
-          <p class="footer-desc">Mang đến trải nghiệm trà sữa tuyệt vời nhất với hương vị đậm đà và nguyên liệu tươi sạch.</p>
-          <div class="social-links">
-            <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
-          </div>
-        </div>
-        
-        <div>
-          <h4 class="footer-title">Liên Kết</h4>
-          <div class="footer-links">
-            <a href="index.html">Trang Chủ</a>
-            <a href="menu.html">Thực Đơn</a>
-            <a href="#about">Về Chúng Tôi</a>
-            <a href="admin/index.html">Đăng Nhập Admin</a>
-          </div>
-        </div>
-        
-        <div>
-          <h4 class="footer-title">Chính Sách</h4>
-          <div class="footer-links">
-            <a href="#">Điều Khoản Sử Dụng</a>
-            <a href="#">Chính Sách Bảo Mật</a>
-            <a href="#">Chính Sách Đổi Trả</a>
-          </div>
-        </div>
-        
-        <div>
-          <h4 class="footer-title">Liên Hệ</h4>
-          <div class="footer-links">
-            <a href="#"><i class="fas fa-map-marker-alt mr-2"></i> 123 Đường Sữa, Quận 1, TP.HCM</a>
-            <a href="#"><i class="fas fa-phone mr-2"></i> 1900 1234</a>
-            <a href="#"><i class="fas fa-envelope mr-2"></i> hello@bobatea.vn</a>
-          </div>
+    <!-- Stats -->
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+        <div class="stat-info">
+          <h3>Doanh Thu Hôm Nay</h3>
+          <div class="stat-value text-primary" id="today-revenue">0 ₫</div>
         </div>
       </div>
       
-      <div class="footer-bottom">
-        <p>&copy; 2023 BobaTea. All rights reserved. Demo Project 12M VND.</p>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+        <div class="stat-info">
+          <h3>Đơn Hàng Mới</h3>
+          <div class="stat-value" id="new-orders">0</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-box"></i></div>
+        <div class="stat-info">
+          <h3>Tổng Sản Phẩm</h3>
+          <div class="stat-value" id="total-products">0</div>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-info">
+          <h3>Lượt Truy Cập</h3>
+          <div class="stat-value">1,240</div>
+        </div>
       </div>
     </div>
-  </footer>
 
-  <!-- Module Loading Script -->
+    <!-- Recent Orders -->
+    <div class="admin-card">
+      <div class="card-header">
+        <h2 class="text-xl m-0 font-heading">Đơn Hàng Gần Đây</h2>
+        <a href="orders.html" class="btn btn-outline btn-sm">Xem tất cả</a>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Mã Đơn</th>
+              <th>Khách Hàng</th>
+              <th>Tổng Tiền</th>
+              <th>Trạng Thái</th>
+              <th>Thời Gian</th>
+              <th>Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="recent-orders-tbody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
   <script type="module">
-    import { categories, getPopularProducts } from './js/data/products.js';
-    import { createProductCard, setupQuickAdd } from './js/modules/product.js';
-    import './js/app.js';
+    import { orderManager } from '../js/modules/order.js';
+    import { formatVND } from '../js/modules/currency.js';
+    import { products } from '../js/data/products.js';
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Render Categories
-      const catContainer = document.getElementById('home-categories');
-      if (catContainer) {
-        let catHtml = '';
-        categories.forEach((cat, index) => {
-          // Chỉ hiển thị 4 danh mục
-          if (index < 4) {
-            catHtml += `
-              <div class="category-card" onclick="window.location.href='menu.html?category=${cat.id}'">
-                <div class="category-icon">${cat.icon}</div>
-                <h3 class="text-lg m-0">${cat.name}</h3>
-              </div>
-            `;
-          }
-        });
-        catContainer.innerHTML = catHtml;
+      // Setup Theme
+      const body = document.documentElement;
+      const themeToggle = document.getElementById('theme-toggle');
+      
+      const currentTheme = localStorage.getItem('theme') || 'light';
+      body.setAttribute('data-theme', currentTheme);
+      updateThemeIcon(currentTheme);
+
+      themeToggle.addEventListener('click', () => {
+        const isDark = body.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
+        
+        body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+      });
+
+      function updateThemeIcon(theme) {
+        if (theme === 'dark') {
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        }
       }
 
-      // Render Popular Products
-      const popContainer = document.getElementById('popular-products');
-      if (popContainer) {
-        const popular = getPopularProducts(4);
-        let popHtml = '';
-        popular.forEach(product => {
-          popHtml += createProductCard(product);
+      // Sidebar Toggle Mobile
+      document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+        document.querySelector('.admin-sidebar').classList.toggle('show');
+      });
+
+      // Update Stats
+      document.getElementById('total-products').textContent = products.length;
+      
+      const orders = orderManager.orders;
+      
+      // Calculate today's revenue and new orders
+      const today = new Date().toDateString();
+      let todayRev = 0;
+      let newOrdCount = 0;
+      
+      orders.forEach(o => {
+        const d = new Date(o.createdAt).toDateString();
+        if (d === today) {
+          if (o.status !== 'cancelled') {
+            todayRev += o.total;
+          }
+          newOrdCount++;
+        }
+      });
+      
+      document.getElementById('today-revenue').textContent = formatVND(todayRev);
+      document.getElementById('new-orders').textContent = newOrdCount;
+
+      // Render Recent Orders
+      const tbody = document.getElementById('recent-orders-tbody');
+      const recentOrders = orderManager.getRecentOrders(5);
+      
+      if (recentOrders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-light">Chưa có đơn hàng nào</td></tr>';
+      } else {
+        let html = '';
+        recentOrders.forEach(o => {
+          let statusClass = '';
+          let statusText = '';
+          
+          switch(o.status) {
+            case 'pending': statusClass = 'status-pending'; statusText = 'Chờ xử lý'; break;
+            case 'processing': statusClass = 'status-processing'; statusText = 'Đang pha'; break;
+            case 'completed': statusClass = 'status-completed'; statusText = 'Đã giao'; break;
+            case 'cancelled': statusClass = 'status-cancelled'; statusText = 'Đã hủy'; break;
+          }
+          
+          const date = new Date(o.createdAt);
+          
+          html += `
+            <tr>
+              <td><strong>${o.id}</strong></td>
+              <td>${o.customer.fullName}<br><span class="text-xs text-light">${o.customer.phone}</span></td>
+              <td class="font-bold text-primary">${formatVND(o.total)}</td>
+              <td><span class="status ${statusClass}">${statusText}</span></td>
+              <td class="text-sm text-light">${date.toLocaleTimeString()} - ${date.toLocaleDateString('vi-VN')}</td>
+              <td>
+                <div class="action-btns">
+                  <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></button>
+                </div>
+              </td>
+            </tr>
+          `;
         });
-        popContainer.innerHTML = popHtml;
-        setupQuickAdd(popContainer);
+        tbody.innerHTML = html;
       }
     });
   </script>

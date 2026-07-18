@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Sản Phẩm - BobaTea Admin</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/pages/admin.css">
+</head>
+<body class="admin-body">
+  
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <a href="../index.html" class="logo text-xl">🧋 <span>BobaTea Admin</span></a>
+    </div>
+    
+    <nav class="admin-nav">
+      <a href="index.html" class="admin-nav-item">
+        <i class="fas fa-home"></i> Tổng Quan
+      </a>
+      <a href="orders.html" class="admin-nav-item">
+        <i class="fas fa-shopping-cart"></i> Đơn Hàng
+      </a>
+      <a href="products.html" class="admin-nav-item active">
+        <i class="fas fa-box"></i> Sản Phẩm
+      </a>
+      <a href="#" class="admin-nav-item">
+        <i class="fas fa-users"></i> Khách Hàng
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <header class="admin-header">
+      <h1 class="text-2xl m-0 font-heading">Quản Lý Sản Phẩm</h1>
+      <div class="admin-user">
+        <button id="theme-toggle" class="theme-toggle mr-4"><i class="fas fa-moon"></i></button>
+        <span class="font-bold">Admin</span>
+      </div>
+    </header>
+
+    <div class="admin-card">
+      <div class="card-header">
+        <div class="flex gap-4 items-center">
+          <input type="text" id="search-product" class="form-control" placeholder="Tìm kiếm sản phẩm..." style="width: 300px;">
+        </div>
+        <button class="btn btn-primary" onclick="alert('Tính năng thêm sản phẩm đang phát triển')">
+          <i class="fas fa-plus mr-2"></i> Thêm Sản Phẩm Mới
+        </button>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Hình Ảnh</th>
+              <th>Tên Sản Phẩm</th>
+              <th>Danh Mục</th>
+              <th>Giá (Size M)</th>
+              <th>Nổi Bật</th>
+              <th>Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody id="products-tbody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { products, categories } from '../js/data/products.js';
+    import { formatVND } from '../js/modules/currency.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Setup Theme logic (omitted for brevity, assume similar to index)
+      const renderProducts = (data) => {
+        const tbody = document.getElementById('products-tbody');
+        let html = '';
+        
+        data.forEach(p => {
+          const cat = categories.find(c => c.id === p.categoryId);
+          const popBadge = p.isPopular ? '<span class="status status-completed">Có</span>' : '<span class="status status-pending">Không</span>';
+          
+          html += `
+            <tr>
+              <td><img src="../${p.image}" alt="${p.name}" width="50" height="50" style="object-fit:cover; border-radius:8px;" onerror="this.src='https://via.placeholder.com/50'"></td>
+              <td><strong>${p.name}</strong></td>
+              <td>${cat ? cat.name : 'Unknown'}</td>
+              <td class="font-bold text-primary">${formatVND(p.prices.m)}</td>
+              <td>${popBadge}</td>
+              <td>
+                <div class="action-btns">
+                  <button class="btn btn-outline btn-sm" title="Sửa" onclick="alert('Sửa tính năng đang phát triển')"><i class="fas fa-edit"></i></button>
+                  <button class="btn btn-outline btn-sm" title="Xóa" onclick="alert('Xóa tính năng đang phát triển')" style="color:var(--color-error); border-color:var(--color-error)"><i class="fas fa-trash"></i></button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      };
+      
+      renderProducts(products);
+
+      document.getElementById('search-product').addEventListener('input', (e) => {
+        const kw = e.target.value.toLowerCase();
+        const filtered = products.filter(p => p.name.toLowerCase().includes(kw));
+        renderProducts(filtered);
+      });
+    });
+  </script>
+</body>
+</html>

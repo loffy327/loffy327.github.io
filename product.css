@@ -1,0 +1,223 @@
+/* Product Detail Layout */
+.product-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-12);
+  align-items: start;
+}
+
+/* Product Gallery */
+.product-gallery {
+  position: sticky;
+  top: 100px;
+}
+
+.main-image-container {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-8);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--spacing-4);
+  height: 500px;
+}
+
+[data-theme="dark"] .main-image-container {
+  background: var(--color-dark-lighter);
+}
+
+.main-image-container img {
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
+}
+
+/* Product Info */
+.product-info h1 {
+  font-size: var(--text-4xl);
+  margin-bottom: var(--spacing-2);
+}
+
+.product-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  margin-bottom: var(--spacing-6);
+  color: var(--color-text-light);
+}
+
+.product-price-large {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-6);
+}
+
+/* Options Selector (Size, Sugar, Ice) */
+.option-group {
+  margin-bottom: var(--spacing-6);
+}
+
+.option-title {
+  font-weight: 600;
+  margin-bottom: var(--spacing-3);
+  display: flex;
+  justify-content: space-between;
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-3);
+}
+
+.option-btn {
+  padding: var(--spacing-3);
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .option-btn {
+  background: var(--color-dark);
+  border-color: #334155;
+}
+
+.option-btn:hover {
+  border-color: var(--color-primary-light);
+}
+
+.option-btn.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+/* Topping List */
+.topping-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.topping-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-3);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+[data-theme="dark"] .topping-item {
+  border-color: #334155;
+}
+
+.topping-item:hover {
+  background: rgba(0,0,0,0.02);
+}
+
+[data-theme="dark"] .topping-item:hover {
+  background: rgba(255,255,255,0.02);
+}
+
+.topping-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.topping-checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+}
+
+/* Action Area */
+.action-area {
+  display: flex;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-8);
+  padding-top: var(--spacing-6);
+  border-top: 1px solid #e2e8f0;
+}
+
+[data-theme="dark"] .action-area {
+  border-color: #334155;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-full);
+  padding: 0 var(--spacing-2);
+}
+
+[data-theme="dark"] .quantity-selector {
+  border-color: #334155;
+}
+
+.qty-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--color-text);
+}
+
+.qty-input {
+  width: 40px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.add-to-cart-btn {
+  flex: 1;
+  font-size: 1.1rem;
+  padding: var(--spacing-4);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .product-detail-layout {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-8);
+  }
+  
+  .product-gallery {
+    position: static;
+  }
+  
+  .main-image-container {
+    height: 400px;
+  }
+}
+
+@media (max-width: 576px) {
+  .option-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .action-area {
+    flex-direction: column;
+  }
+  
+  .quantity-selector {
+    justify-content: center;
+    padding: var(--spacing-2);
+  }
+}
