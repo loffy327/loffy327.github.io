@@ -3,179 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Key VIP</title>
-    <!-- Tích hợp TailwindCSS -->
+    <title>Hệ Thống Kích Hoạt PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .glass {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        /* Modal background */
-        .modal-bg {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-        }
+        .glass { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-panel { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); }
+        /* Style cho thanh kéo (Slider) */
+        input[type=range] { accent-color: #3b82f6; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen font-sans antialiased flex flex-col relative">
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen font-sans antialiased flex flex-col">
 
-    <!-- Thanh Điều Hướng (Menu) -->
-    <nav class="glass sticky top-0 z-50 p-4 shadow-lg">
+    <nav class="glass sticky top-0 z-50 p-4 shadow-lg border-b border-gray-700">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">PRO SOFTWARE</h1>
-            <div class="space-x-2 sm:space-x-4 flex">
-                <button onclick="showSection('login')" class="hover:text-blue-400 font-semibold transition px-2 py-2">Đăng Nhập</button>
-                <button onclick="showSection('store')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-bold transition shadow-lg shadow-blue-500/30">Mua Key</button>
-            </div>
+            <h1 class="text-2xl font-bold text-blue-400 tracking-widest">PRO<span class="text-white">TOOL</span></h1>
         </div>
     </nav>
 
-    <!-- Nội dung chính -->
     <main class="flex-grow flex items-center justify-center p-4">
         
-        <!-- ================= PHẦN ĐĂNG NHẬP ================= -->
-        <section id="login" class="w-full max-w-md glass p-8 rounded-2xl shadow-2xl transition-all duration-300">
+        <!-- ================= MÀN HÌNH ĐĂNG NHẬP ================= -->
+        <section id="login-section" class="w-full max-w-md glass p-8 rounded-2xl shadow-2xl">
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold mb-2">Đăng Nhập Hệ Thống</h2>
-                <p class="text-gray-400 text-sm">Vui lòng nhập Key kích hoạt gồm 32 ký tự.</p>
+                <h2 class="text-2xl font-bold mb-2">Đăng Nhập Hệ Thống</h2>
+                <p class="text-gray-400 text-sm">Nhập Key kích hoạt 32 ký tự.</p>
             </div>
-            
             <div class="space-y-6">
-                <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-2">License Key</label>
-                    <input type="text" id="keyInput" placeholder="Ví dụ: A1b2C3d4E5f6..." class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-mono text-center tracking-widest text-sm transition text-white">
-                </div>
-                <button onclick="verifyKey()" id="loginBtn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-purple-500/30 transition transform hover:scale-105">
-                    KÍCH HOẠT VÀ ĐĂNG NHẬP
-                </button>
+                <input type="text" id="keyInput" placeholder="Nhập License Key..." class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 font-mono text-center text-sm text-green-400 focus:border-blue-500 focus:outline-none">
+                <button onclick="login()" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-lg font-bold transition">ĐĂNG NHẬP</button>
             </div>
         </section>
 
-        <!-- ================= PHẦN BẢNG GIÁ MUA KEY ================= -->
-        <section id="store" class="w-full max-w-5xl hidden transition-all duration-300">
-            <div class="text-center mb-10">
-                <h2 class="text-4xl font-bold mb-3">Bảng Giá Dịch Vụ</h2>
-                <p class="text-gray-400">Chọn nút <b class="text-white">Tạo Key</b> ở gói bạn muốn mua. Key sẽ được tự động sinh ra.</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Cột Basic -->
-                <div class="glass p-8 rounded-2xl border-t-4 border-blue-500 flex flex-col relative">
-                    <h3 class="text-2xl font-bold text-blue-400 mb-6 text-center">BẢN BASIC</h3>
-                    <ul class="space-y-4 mb-8 flex-grow text-lg">
-                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
-                            <span>1 Ngày (30.000đ)</span> <button onclick="buyKey('Basic', '1 Ngày', '30.000 VNĐ')" class="bg-blue-600 hover:bg-blue-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
-                        </li>
-                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
-                            <span>7 Ngày (120.000đ)</span> <button onclick="buyKey('Basic', '7 Ngày', '120.000 VNĐ')" class="bg-blue-600 hover:bg-blue-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
-                        </li>
-                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
-                            <span>30 Ngày (250.000đ)</span> <button onclick="buyKey('Basic', '30 Ngày', '250.000 VNĐ')" class="bg-blue-600 hover:bg-blue-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
-                        </li>
-                        <li class="flex justify-between items-center border-b border-gray-700 pb-2 text-yellow-500">
-                            <span>Vĩnh Viễn (1.000.000đ)</span> <button onclick="buyKey('Basic', 'Vĩnh Viễn', '1.000.000 VNĐ')" class="bg-blue-600 hover:bg-blue-500 text-sm px-3 py-1 rounded font-bold text-white">Tạo Key</button>
-                        </li>
-                    </ul>
+        <!-- ================= BẢNG ĐIỀU KHIỂN (DASHBOARD) ================= -->
+        <section id="dashboard-section" class="w-full max-w-4xl glass p-8 rounded-2xl shadow-2xl hidden">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-green-400" id="dash-title">CONTROL PANEL</h2>
+                    <p class="text-gray-400 text-sm" id="dash-subtitle">Đã kết nối máy chủ.</p>
                 </div>
-
-                <!-- Cột VIP -->
-                <div class="glass p-8 rounded-2xl border-t-4 border-purple-500 flex flex-col relative">
-                    <div class="absolute top-0 right-0 bg-purple-600 text-xs font-bold px-4 py-1 rounded-bl-lg">Khuyên dùng</div>
-                    <h3 class="text-2xl font-bold text-purple-400 mb-6 text-center">BẢN VIP</h3>
-                    <ul class="space-y-4 mb-8 flex-grow text-lg">
-                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
-                            <span>1 Ngày (50.000đ)</span> <button onclick="buyKey('VIP', '1 Ngày', '50.000 VNĐ')" class="bg-purple-600 hover:bg-purple-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
-                        </li>
-                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
-                            <span>7 Ngày (250.000đ)</span> <button onclick="buyKey('VIP', '7 Ngày', '250.000 VNĐ')" class="bg-purple-600 hover:bg-purple-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
-                        </li>
-                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
-                            <span>30 Ngày (1.000.000đ)</span> <button onclick="buyKey('VIP', '30 Ngày', '1.000.000 VNĐ')" class="bg-purple-600 hover:bg-purple-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
-                        </li>
-                        <li class="flex justify-between items-center border-b border-gray-700 pb-2 text-yellow-500">
-                            <span>Vĩnh Viễn (3.000.000đ)</span> <button onclick="buyKey('VIP', 'Vĩnh Viễn', '3.000.000 VNĐ')" class="bg-purple-600 hover:bg-purple-500 text-sm px-3 py-1 rounded font-bold text-white">Tạo Key</button>
-                        </li>
-                    </ul>
+                <div class="bg-gray-800 px-4 py-2 rounded-lg border border-gray-600">
+                    <span class="text-xs text-gray-400">Thiết bị hỗ trợ:</span>
+                    <span class="font-bold text-blue-400 ml-2" id="dash-os">IOS</span>
                 </div>
             </div>
+
+            <!-- Nút Cấu Hình -->
+            <div class="mb-6">
+                <h3 class="text-lg font-bold mb-3 text-gray-300">Cấu Hình Bắn (Profiles)</h3>
+                <div id="profile-buttons" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <!-- Nút sẽ được JS tạo tự động tùy loại Key -->
+                </div>
+            </div>
+
+            <!-- Thanh Kéo (Sliders) -->
+            <div class="mb-8">
+                <h3 class="text-lg font-bold mb-3 text-gray-300">Tinh Chỉnh Thủ Công (Custom)</h3>
+                <div id="sliders-container" class="grid md:grid-cols-2 gap-6 glass-panel p-6 rounded-lg">
+                    <!-- Sliders sẽ được JS tạo tự động tùy loại Key -->
+                </div>
+            </div>
+
+            <button onclick="applySettings()" id="applyBtn" class="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-500 hover:to-blue-500 py-4 rounded-lg font-bold text-xl shadow-lg transition">
+                ÁP DỤNG CẤU HÌNH (INJECT)
+            </button>
         </section>
 
     </main>
 
-    <!-- ================= CỬA SỔ THANH TOÁN & NHẬN KEY ================= -->
-    <div id="paymentModal" class="fixed inset-0 modal-bg flex items-center justify-center hidden z-50 p-4">
-        <div class="glass max-w-lg w-full p-8 rounded-2xl shadow-2xl relative">
-            <h3 class="text-2xl font-bold text-green-400 mb-4 border-b border-gray-600 pb-2">Key Đã Được Tạo Tự Động!</h3>
-            
-            <div class="mb-4">
-                <p class="text-gray-300 text-sm mb-1">Gói đã chọn:</p>
-                <p id="modalPackage" class="font-bold text-xl text-yellow-400">Bản VIP - 30 Ngày</p>
-            </div>
-            
-            <div class="mb-6">
-                <p class="text-gray-300 text-sm mb-1">Key 32 ký tự của bạn (Vui lòng lưu lại):</p>
-                <div class="flex items-center space-x-2">
-                    <input type="text" id="generatedKey" readonly class="w-full bg-gray-900 border border-gray-700 text-green-400 font-mono text-center px-4 py-3 rounded-lg focus:outline-none cursor-text">
-                    <button onclick="copyKey()" class="bg-gray-700 hover:bg-gray-600 px-4 py-3 rounded-lg font-bold">Copy</button>
-                </div>
-            </div>
-
-            <div class="bg-gray-900 p-4 rounded-lg mb-6 border border-gray-700">
-                <p class="text-sm text-gray-300 mb-2">Để kích hoạt Key này, vui lòng chuyển khoản <strong id="modalPrice" class="text-white"></strong> vào tài khoản:</p>
-                <p class="font-mono text-lg text-blue-400">Ngân hàng MB Bank</p>
-                <p class="font-mono text-lg text-blue-400">STK: 0123456789</p>
-                <p class="font-mono text-lg text-blue-400">Tên: NGUYEN VAN A</p>
-                <p class="text-sm mt-3 text-red-400">Nội dung chuyển khoản nhập ĐÚNG mã Key ở trên.</p>
-            </div>
-
-            <button onclick="closeModal()" class="w-full bg-red-600 hover:bg-red-500 py-3 rounded-lg font-bold transition">Đóng</button>
-        </div>
-    </div>
-
     <script>
-        // Chức năng chuyển đổi Tab
-        function showSection(sectionId) {
-            document.getElementById('login').classList.add('hidden');
-            document.getElementById('store').classList.add('hidden');
-            document.getElementById(sectionId).classList.remove('hidden');
-        }
-
-        // Thuật toán tạo ra Key ngẫu nhiên 32 ký tự (chữ hoa, chữ thường, số)
-        function generateRandom32CharKey() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let key = '';
-            const randomValues = new Uint32Array(32);
-            crypto.getRandomValues(randomValues);
-            for (let i = 0; i < 32; i++) {
-                key += chars[randomValues[i] % chars.length];
+        // CẤU HÌNH CÁC THÔNG SỐ (GIẢ LẬP)
+        const config = {
+            basic: {
+                os: "IOS Only 🍏",
+                title: "BASIC PANEL",
+                profiles: [
+                    { name: "Nhẹ Tâm", vals: [70, 60, 50, 55] },
+                    { name: "Nặng Tâm", vals: [30, 20, 80, 85] },
+                    { name: "Xử Lí Tốt", vals: [50, 50, 50, 50] }
+                ],
+                sliders: ["Sensitivity", "Round", "Smoothness", "Speed"] // 4 thanh cho basic
+            },
+            vip: {
+                os: "IOS & Android 📱",
+                title: "VIP AI PANEL",
+                profiles: [
+                    { name: "AI VIP (Nặng)", vals: [20, 15, 90, 95, 100, 90] },
+                    { name: "V2 (Nhẹ Tâm)", vals: [85, 80, 40, 45, 60, 50] },
+                    { name: "V1.44 (Xử lí tốt)", vals: [55, 50, 55, 50, 70, 70] },
+                    { name: "AI CHECKER", vals: [100, 100, 100, 100, 100, 100] }
+                ],
+                sliders: ["Sensitivity (AI)", "Round (Max)", "Smooth Tracking", "Speed Inject", "Recoil Control", "Aim Assist"] // 6 thanh cho vip
             }
-            return key;
-        }
+        };
 
-        // Khi bấm nút tạo Key
-        function buyKey(type, duration, price) {
-            const newKey = generateRandom32CharKey();
-            document.getElementById('modalPackage').innerText = `Bản ${type} - ${duration}`;
-            document.getElementById('modalPrice').innerText = price;
-            document.getElementById('generatedKey').value = newKey;
-            document.getElementById('paymentModal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('paymentModal').classList.add('hidden');
-        }
-
-        function copyKey() {
-            const keyText = document.getElementById('generatedKey');
-            keyText.select();
-            keyText.setSelectionRange(0, 99999); // Cho thiết bị di động
-            navigator.clipboard.writeText(keyText.value);
-            alert("Đã copy Key!");
-        }
-
-        // MÃ HÓA SHA-256 CHO ĐĂNG NHẬP
+        // Thuật toán SHA-256
         async function hashKey(key) {
             const msgBuffer = new TextEncoder().encode(key);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -183,39 +104,114 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // ĐĂNG NHẬP
-        async function verifyKey() {
+        async function login() {
             const keyInput = document.getElementById('keyInput').value.trim();
             const btn = document.getElementById('loginBtn');
-            
-            if (keyInput.length !== 32) {
-                alert("❌ Lỗi: Key phải có độ dài chính xác 32 ký tự chữ và số!");
-                return;
-            }
+            if (keyInput.length !== 32) { alert("Key phải có 32 ký tự!"); return; }
 
-            btn.innerText = "Đang kiểm tra...";
-            btn.disabled = true;
+            btn.innerText = "Đang kiểm tra dữ liệu..."; btn.disabled = true;
 
             try {
-                const hashedUserKey = await hashKey(keyInput);
-                const rawUrl = 'https://raw.githubusercontent.com/loffy327/TEST/refs/heads/main/key.txt';
-                const response = await fetch(rawUrl);
-                if (!response.ok) throw new Error("Không tìm thấy file hệ thống hoặc bị chặn kết nối.");
-                
-                const text = await response.text();
-                const validHashes = text.split('\n').map(line => line.trim());
+                const hashedKey = await hashKey(keyInput);
 
-                if (validHashes.includes(hashedUserKey)) {
-                    alert("✅ Kích hoạt thành công! Key hoàn toàn hợp lệ.");
+                // KIỂM TRA FILE VIP TRƯỚC (Lưu ý: Bạn phải tạo file vip.txt trên Github)
+                let isVip = false; let isBasic = false;
+                try {
+                    // Tạm dùng file key.txt của bạn làm VIP để test
+                    const resVip = await fetch('https://raw.githubusercontent.com/loffy327/TEST/refs/heads/main/key.txt');
+                    const textVip = await resVip.text();
+                    if (textVip.split('\n').map(l => l.trim()).includes(hashedKey)) isVip = true;
+                } catch(e) {}
+
+                // KIỂM TRA FILE BASIC (Lưu ý: Bạn phải tạo file basic.txt trên Github)
+                if (!isVip) {
+                    try {
+                        const resBasic = await fetch('https://raw.githubusercontent.com/loffy327/TEST/refs/heads/main/basic.txt');
+                        const textBasic = await resBasic.text();
+                        if (textBasic.split('\n').map(l => l.trim()).includes(hashedKey)) isBasic = true;
+                    } catch(e) {}
+                }
+
+                if (isVip) {
+                    buildDashboard('vip');
+                } else if (isBasic) {
+                    buildDashboard('basic');
                 } else {
-                    alert("❌ Lỗi: Key không tồn tại, chưa thanh toán, hoặc đã hết hạn.");
+                    alert("❌ Key không tồn tại hoặc đã hết hạn.");
+                    btn.innerText = "ĐĂNG NHẬP"; btn.disabled = false;
                 }
             } catch (error) {
-                alert("Lỗi máy chủ: " + error.message);
-            } finally {
-                btn.innerText = "KÍCH HOẠT VÀ ĐĂNG NHẬP";
-                btn.disabled = false;
+                alert("Lỗi máy chủ.");
+                btn.innerText = "ĐĂNG NHẬP"; btn.disabled = false;
             }
+        }
+
+        // Tạo giao diện sau khi đăng nhập
+        function buildDashboard(type) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            
+            const data = config[type];
+            document.getElementById('dash-title').innerText = data.title;
+            document.getElementById('dash-title').className = type === 'vip' ? "text-3xl font-bold text-purple-500" : "text-3xl font-bold text-blue-400";
+            document.getElementById('dash-os').innerText = data.os;
+
+            // Tạo Sliders
+            const sCont = document.getElementById('sliders-container');
+            sCont.innerHTML = '';
+            data.sliders.forEach((sName, index) => {
+                sCont.innerHTML += `
+                    <div>
+                        <div class="flex justify-between text-sm text-gray-300 mb-1">
+                            <span>${sName}</span> <span id="val-${index}" class="text-blue-400 font-bold">50%</span>
+                        </div>
+                        <input type="range" id="slider-${index}" min="0" max="100" value="50" class="w-full" oninput="updateVal(${index})">
+                    </div>
+                `;
+            });
+
+            // Tạo Nút Profile
+            const pCont = document.getElementById('profile-buttons');
+            pCont.innerHTML = '';
+            data.profiles.forEach(prof => {
+                // Chuyển mảng giá trị thành chuỗi để đưa vào hàm onclick
+                const valsStr = JSON.stringify(prof.vals);
+                pCont.innerHTML += `
+                    <button onclick='applyProfile(${valsStr})' class="bg-gray-800 hover:bg-gray-700 border border-gray-600 py-3 rounded-lg font-bold text-sm text-gray-200 transition focus:ring-2 focus:ring-blue-500">
+                        ${prof.name}
+                    </button>
+                `;
+            });
+        }
+
+        // Cập nhật số khi kéo thanh
+        function updateVal(index) {
+            document.getElementById(`val-${index}`).innerText = document.getElementById(`slider-${index}`).value + "%";
+        }
+
+        // Khi bấm nút Profile (Nhẹ tâm, Nặng tâm...)
+        function applyProfile(vals) {
+            vals.forEach((val, index) => {
+                const slider = document.getElementById(`slider-${index}`);
+                if(slider) {
+                    slider.value = val;
+                    updateVal(index);
+                }
+            });
+        }
+
+        // Hiệu ứng bấm nút Áp dụng
+        function applySettings() {
+            const btn = document.getElementById('applyBtn');
+            btn.innerText = "ĐANG KẾT NỐI VỚI GAME...";
+            btn.classList.add("animate-pulse");
+            setTimeout(() => {
+                btn.innerText = "✅ ĐÃ ÁP DỤNG CẤU HÌNH THÀNH CÔNG!";
+                btn.classList.remove("animate-pulse");
+                setTimeout(() => {
+                    btn.innerText = "ÁP DỤNG LẠI (INJECT)";
+                }, 3000);
+            }, 2000);
         }
     </script>
 </body>
