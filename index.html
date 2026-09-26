@@ -10,7 +10,6 @@
     <style>
         .glass { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .glass-panel { background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); }
-        /* Style cho thanh kéo (Slider) */
         input[type=range] { accent-color: #3b82f6; }
     </style>
 </head>
@@ -18,7 +17,7 @@
 
     <nav class="glass sticky top-0 z-50 p-4 shadow-lg border-b border-gray-700">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-blue-400 tracking-widest">PRO<span class="text-white">TOOL</span></h1>
+            <h1 class="text-2xl font-bold text-blue-400 tracking-widest">PRO<span class="text-white">SOFTWARE</span></h1>
         </div>
     </nav>
 
@@ -38,30 +37,35 @@
 
         <!-- ================= BẢNG ĐIỀU KHIỂN (DASHBOARD) ================= -->
         <section id="dashboard-section" class="w-full max-w-4xl glass p-8 rounded-2xl shadow-2xl hidden">
-            <div class="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
+            
+            <!-- Phần Tiêu Đề & Nút Đăng Xuất -->
+            <div class="flex justify-between items-start mb-6 border-b border-gray-700 pb-4">
                 <div>
                     <h2 class="text-3xl font-bold text-green-400" id="dash-title">CONTROL PANEL</h2>
-                    <p class="text-gray-400 text-sm" id="dash-subtitle">Đã kết nối máy chủ.</p>
+                    <p class="text-gray-400 text-sm mt-2">Trạng thái Key: <span class="text-green-500 font-bold ml-1">Hoạt động (Vĩnh Viễn)</span></p>
                 </div>
-                <div class="bg-gray-800 px-4 py-2 rounded-lg border border-gray-600">
-                    <span class="text-xs text-gray-400">Thiết bị hỗ trợ:</span>
-                    <span class="font-bold text-blue-400 ml-2" id="dash-os">IOS</span>
+                <div class="flex flex-col items-end space-y-3">
+                    <div class="bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-600">
+                        <span class="text-xs text-gray-400">Thiết bị:</span>
+                        <span class="font-bold text-blue-400 ml-1" id="dash-os">IOS</span>
+                    </div>
+                    <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-500 text-white px-4 py-1.5 rounded-lg font-bold transition shadow-lg">Đăng Xuất 🚪</button>
                 </div>
             </div>
 
             <!-- Nút Cấu Hình -->
             <div class="mb-6">
-                <h3 class="text-lg font-bold mb-3 text-gray-300">Cấu Hình Bắn (Profiles)</h3>
+                <h3 class="text-lg font-bold mb-3 text-gray-300">Cấu Hình Tự Động (Profiles)</h3>
                 <div id="profile-buttons" class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <!-- Nút sẽ được JS tạo tự động tùy loại Key -->
+                    <!-- Nút JS tạo tự động -->
                 </div>
             </div>
 
-            <!-- Thanh Kéo (Sliders) -->
+            <!-- Thanh Kéo -->
             <div class="mb-8">
                 <h3 class="text-lg font-bold mb-3 text-gray-300">Tinh Chỉnh Thủ Công (Custom)</h3>
                 <div id="sliders-container" class="grid md:grid-cols-2 gap-6 glass-panel p-6 rounded-lg">
-                    <!-- Sliders sẽ được JS tạo tự động tùy loại Key -->
+                    <!-- Sliders JS tạo tự động -->
                 </div>
             </div>
 
@@ -69,11 +73,10 @@
                 ÁP DỤNG CẤU HÌNH (INJECT)
             </button>
         </section>
-
     </main>
 
     <script>
-        // CẤU HÌNH CÁC THÔNG SỐ (GIẢ LẬP)
+        // CẤU HÌNH
         const config = {
             basic: {
                 os: "IOS Only 🍏",
@@ -83,7 +86,7 @@
                     { name: "Nặng Tâm", vals: [30, 20, 80, 85] },
                     { name: "Xử Lí Tốt", vals: [50, 50, 50, 50] }
                 ],
-                sliders: ["Sensitivity", "Round", "Smoothness", "Speed"] // 4 thanh cho basic
+                sliders: ["Sensitivity", "Round", "Smoothness", "Speed"]
             },
             vip: {
                 os: "IOS & Android 📱",
@@ -94,11 +97,10 @@
                     { name: "V1.44 (Xử lí tốt)", vals: [55, 50, 55, 50, 70, 70] },
                     { name: "AI CHECKER", vals: [100, 100, 100, 100, 100, 100] }
                 ],
-                sliders: ["Sensitivity (AI)", "Round (Max)", "Smooth Tracking", "Speed Inject", "Recoil Control", "Aim Assist"] // 6 thanh cho vip
+                sliders: ["Sensitivity (AI)", "Round (Max)", "Smooth Tracking", "Speed Inject", "Recoil Control", "Aim Assist"]
             }
         };
 
-        // Thuật toán SHA-256
         async function hashKey(key) {
             const msgBuffer = new TextEncoder().encode(key);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -115,17 +117,14 @@
 
             try {
                 const hashedKey = await hashKey(keyInput);
-
-                // KIỂM TRA FILE VIP TRƯỚC (Lưu ý: Bạn phải tạo file vip.txt trên Github)
                 let isVip = false; let isBasic = false;
+                
                 try {
-                    // Tạm dùng file key.txt của bạn làm VIP để test
                     const resVip = await fetch('https://raw.githubusercontent.com/loffy327/TEST/refs/heads/main/key.txt');
                     const textVip = await resVip.text();
                     if (textVip.split('\n').map(l => l.trim()).includes(hashedKey)) isVip = true;
                 } catch(e) {}
 
-                // KIỂM TRA FILE BASIC (Lưu ý: Bạn phải tạo file basic.txt trên Github)
                 if (!isVip) {
                     try {
                         const resBasic = await fetch('https://raw.githubusercontent.com/loffy327/TEST/refs/heads/main/basic.txt');
@@ -148,7 +147,16 @@
             }
         }
 
-        // Tạo giao diện sau khi đăng nhập
+        // Chức năng Đăng Xuất
+        function logout() {
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('keyInput').value = '';
+            const btn = document.getElementById('loginBtn');
+            btn.innerText = "ĐĂNG NHẬP";
+            btn.disabled = false;
+        }
+
         function buildDashboard(type) {
             document.getElementById('login-section').classList.add('hidden');
             document.getElementById('dashboard-section').classList.remove('hidden');
@@ -158,7 +166,6 @@
             document.getElementById('dash-title').className = type === 'vip' ? "text-3xl font-bold text-purple-500" : "text-3xl font-bold text-blue-400";
             document.getElementById('dash-os').innerText = data.os;
 
-            // Tạo Sliders
             const sCont = document.getElementById('sliders-container');
             sCont.innerHTML = '';
             data.sliders.forEach((sName, index) => {
@@ -172,11 +179,9 @@
                 `;
             });
 
-            // Tạo Nút Profile
             const pCont = document.getElementById('profile-buttons');
             pCont.innerHTML = '';
             data.profiles.forEach(prof => {
-                // Chuyển mảng giá trị thành chuỗi để đưa vào hàm onclick
                 const valsStr = JSON.stringify(prof.vals);
                 pCont.innerHTML += `
                     <button onclick='applyProfile(${valsStr})' class="bg-gray-800 hover:bg-gray-700 border border-gray-600 py-3 rounded-lg font-bold text-sm text-gray-200 transition focus:ring-2 focus:ring-blue-500">
@@ -186,12 +191,10 @@
             });
         }
 
-        // Cập nhật số khi kéo thanh
         function updateVal(index) {
             document.getElementById(`val-${index}`).innerText = document.getElementById(`slider-${index}`).value + "%";
         }
 
-        // Khi bấm nút Profile (Nhẹ tâm, Nặng tâm...)
         function applyProfile(vals) {
             vals.forEach((val, index) => {
                 const slider = document.getElementById(`slider-${index}`);
@@ -202,18 +205,20 @@
             });
         }
 
-        // Hiệu ứng bấm nút Áp dụng
         function applySettings() {
             const btn = document.getElementById('applyBtn');
-            btn.innerText = "ĐANG KẾT NỐI VỚI GAME...";
+            btn.innerText = "ĐANG TÌM QUY TRÌNH GAME...";
             btn.classList.add("animate-pulse");
             setTimeout(() => {
-                btn.innerText = "✅ ĐÃ ÁP DỤNG CẤU HÌNH THÀNH CÔNG!";
-                btn.classList.remove("animate-pulse");
+                btn.innerText = "ĐANG TRUYỀN DỮ LIỆU (INJECT)...";
                 setTimeout(() => {
-                    btn.innerText = "ÁP DỤNG LẠI (INJECT)";
-                }, 3000);
-            }, 2000);
+                    btn.innerText = "✅ ĐÃ ÁP DỤNG CẤU HÌNH THÀNH CÔNG!";
+                    btn.classList.remove("animate-pulse");
+                    setTimeout(() => {
+                        btn.innerText = "ÁP DỤNG LẠI (INJECT)";
+                    }, 3000);
+                }, 2000);
+            }, 1000);
         }
     </script>
 </body>
