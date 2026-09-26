@@ -1,225 +1,222 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="light">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - BobaTea</title>
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/pages/admin.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Key VIP</title>
+    <!-- Tích hợp TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Modal background */
+        .modal-bg {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+    </style>
 </head>
-<body class="admin-body">
-  
-  <!-- Sidebar -->
-  <aside class="admin-sidebar">
-    <div class="admin-logo">
-      <a href="../index.html" class="logo text-xl">🧋 <span>BobaTea Admin</span></a>
-    </div>
-    
-    <nav class="admin-nav">
-      <a href="index.html" class="admin-nav-item active">
-        <i class="fas fa-home"></i> Tổng Quan
-      </a>
-      <a href="orders.html" class="admin-nav-item">
-        <i class="fas fa-shopping-cart"></i> Đơn Hàng
-      </a>
-      <a href="products.html" class="admin-nav-item">
-        <i class="fas fa-box"></i> Sản Phẩm
-      </a>
-      <a href="#" class="admin-nav-item">
-        <i class="fas fa-users"></i> Khách Hàng
-      </a>
-      <a href="#" class="admin-nav-item">
-        <i class="fas fa-chart-bar"></i> Báo Cáo
-      </a>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen font-sans antialiased flex flex-col relative">
+
+    <!-- Thanh Điều Hướng (Menu) -->
+    <nav class="glass sticky top-0 z-50 p-4 shadow-lg">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">PRO SOFTWARE</h1>
+            <div class="space-x-2 sm:space-x-4 flex">
+                <button onclick="showSection('login')" class="hover:text-blue-400 font-semibold transition px-2 py-2">Đăng Nhập</button>
+                <button onclick="showSection('store')" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-bold transition shadow-lg shadow-blue-500/30">Mua Key</button>
+            </div>
+        </div>
     </nav>
-    
-    <div class="p-6">
-      <a href="../index.html" class="btn btn-outline btn-block"><i class="fas fa-external-link-alt"></i> Xem Website</a>
-    </div>
-  </aside>
 
-  <!-- Main Content -->
-  <main class="admin-main">
-    <header class="admin-header">
-      <div class="flex items-center gap-4">
-        <button class="mobile-menu-btn d-lg-none" id="sidebar-toggle">
-          <i class="fas fa-bars"></i>
-        </button>
-        <h1 class="text-2xl m-0 font-heading">Dashboard</h1>
-      </div>
-      
-      <div class="admin-user">
-        <button id="theme-toggle" class="theme-toggle mr-4"><i class="fas fa-moon"></i></button>
-        <span class="font-bold">Admin</span>
-        <div class="admin-avatar">A</div>
-      </div>
-    </header>
-
-    <!-- Stats -->
-    <div class="stat-cards">
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
-        <div class="stat-info">
-          <h3>Doanh Thu Hôm Nay</h3>
-          <div class="stat-value text-primary" id="today-revenue">0 ₫</div>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
-        <div class="stat-info">
-          <h3>Đơn Hàng Mới</h3>
-          <div class="stat-value" id="new-orders">0</div>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-box"></i></div>
-        <div class="stat-info">
-          <h3>Tổng Sản Phẩm</h3>
-          <div class="stat-value" id="total-products">0</div>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon"><i class="fas fa-users"></i></div>
-        <div class="stat-info">
-          <h3>Lượt Truy Cập</h3>
-          <div class="stat-value">1,240</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Recent Orders -->
-    <div class="admin-card">
-      <div class="card-header">
-        <h2 class="text-xl m-0 font-heading">Đơn Hàng Gần Đây</h2>
-        <a href="orders.html" class="btn btn-outline btn-sm">Xem tất cả</a>
-      </div>
-      
-      <div class="table-responsive">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Mã Đơn</th>
-              <th>Khách Hàng</th>
-              <th>Tổng Tiền</th>
-              <th>Trạng Thái</th>
-              <th>Thời Gian</th>
-              <th>Thao Tác</th>
-            </tr>
-          </thead>
-          <tbody id="recent-orders-tbody">
-            <!-- Rendered by JS -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </main>
-
-  <script type="module">
-    import { orderManager } from '../js/modules/order.js';
-    import { formatVND } from '../js/modules/currency.js';
-    import { products } from '../js/data/products.js';
-
-    document.addEventListener('DOMContentLoaded', () => {
-      // Setup Theme
-      const body = document.documentElement;
-      const themeToggle = document.getElementById('theme-toggle');
-      
-      const currentTheme = localStorage.getItem('theme') || 'light';
-      body.setAttribute('data-theme', currentTheme);
-      updateThemeIcon(currentTheme);
-
-      themeToggle.addEventListener('click', () => {
-        const isDark = body.getAttribute('data-theme') === 'dark';
-        const newTheme = isDark ? 'light' : 'dark';
+    <!-- Nội dung chính -->
+    <main class="flex-grow flex items-center justify-center p-4">
         
-        body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-      });
-
-      function updateThemeIcon(theme) {
-        if (theme === 'dark') {
-          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-        } else {
-          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-        }
-      }
-
-      // Sidebar Toggle Mobile
-      document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
-        document.querySelector('.admin-sidebar').classList.toggle('show');
-      });
-
-      // Update Stats
-      document.getElementById('total-products').textContent = products.length;
-      
-      const orders = orderManager.orders;
-      
-      // Calculate today's revenue and new orders
-      const today = new Date().toDateString();
-      let todayRev = 0;
-      let newOrdCount = 0;
-      
-      orders.forEach(o => {
-        const d = new Date(o.createdAt).toDateString();
-        if (d === today) {
-          if (o.status !== 'cancelled') {
-            todayRev += o.total;
-          }
-          newOrdCount++;
-        }
-      });
-      
-      document.getElementById('today-revenue').textContent = formatVND(todayRev);
-      document.getElementById('new-orders').textContent = newOrdCount;
-
-      // Render Recent Orders
-      const tbody = document.getElementById('recent-orders-tbody');
-      const recentOrders = orderManager.getRecentOrders(5);
-      
-      if (recentOrders.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-light">Chưa có đơn hàng nào</td></tr>';
-      } else {
-        let html = '';
-        recentOrders.forEach(o => {
-          let statusClass = '';
-          let statusText = '';
-          
-          switch(o.status) {
-            case 'pending': statusClass = 'status-pending'; statusText = 'Chờ xử lý'; break;
-            case 'processing': statusClass = 'status-processing'; statusText = 'Đang pha'; break;
-            case 'completed': statusClass = 'status-completed'; statusText = 'Đã giao'; break;
-            case 'cancelled': statusClass = 'status-cancelled'; statusText = 'Đã hủy'; break;
-          }
-          
-          const date = new Date(o.createdAt);
-          
-          html += `
-            <tr>
-              <td><strong>${o.id}</strong></td>
-              <td>${o.customer.fullName}<br><span class="text-xs text-light">${o.customer.phone}</span></td>
-              <td class="font-bold text-primary">${formatVND(o.total)}</td>
-              <td><span class="status ${statusClass}">${statusText}</span></td>
-              <td class="text-sm text-light">${date.toLocaleTimeString()} - ${date.toLocaleDateString('vi-VN')}</td>
-              <td>
-                <div class="action-btns">
-                  <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></button>
+        <!-- ================= PHẦN ĐĂNG NHẬP ================= -->
+        <section id="login" class="w-full max-w-md glass p-8 rounded-2xl shadow-2xl transition-all duration-300">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold mb-2">Đăng Nhập Hệ Thống</h2>
+                <p class="text-gray-400 text-sm">Vui lòng nhập Key kích hoạt gồm 32 ký tự.</p>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">License Key</label>
+                    <input type="text" id="keyInput" placeholder="Ví dụ: A1b2C3d4E5f6..." class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-mono text-center tracking-widest text-sm transition text-white">
                 </div>
-              </td>
-            </tr>
-          `;
-        });
-        tbody.innerHTML = html;
-      }
-    });
-  </script>
+                <button onclick="verifyKey()" id="loginBtn" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-purple-500/30 transition transform hover:scale-105">
+                    KÍCH HOẠT VÀ ĐĂNG NHẬP
+                </button>
+            </div>
+        </section>
+
+        <!-- ================= PHẦN BẢNG GIÁ MUA KEY ================= -->
+        <section id="store" class="w-full max-w-5xl hidden transition-all duration-300">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold mb-3">Bảng Giá Dịch Vụ</h2>
+                <p class="text-gray-400">Chọn nút <b class="text-white">Tạo Key</b> ở gói bạn muốn mua. Key sẽ được tự động sinh ra.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Cột Basic -->
+                <div class="glass p-8 rounded-2xl border-t-4 border-blue-500 flex flex-col relative">
+                    <h3 class="text-2xl font-bold text-blue-400 mb-6 text-center">BẢN BASIC</h3>
+                    <ul class="space-y-4 mb-8 flex-grow text-lg">
+                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
+                            <span>1 Ngày (30.000đ)</span> <button onclick="buyKey('Basic', '1 Ngày', '30.000 VNĐ')" class="bg-blue-600 hover:bg-blue-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
+                        </li>
+                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
+                            <span>7 Ngày (120.000đ)</span> <button onclick="buyKey('Basic', '7 Ngày', '120.000 VNĐ')" class="bg-blue-600 hover:bg-blue-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
+                        </li>
+                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
+                            <span>30 Ngày (250.000đ)</span> <button onclick="buyKey('Basic', '30 Ngày', '250.000 VNĐ')" class="bg-blue-600 hover:bg-blue-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
+                        </li>
+                        <li class="flex justify-between items-center border-b border-gray-700 pb-2 text-yellow-500">
+                            <span>Vĩnh Viễn (1.000.000đ)</span> <button onclick="buyKey('Basic', 'Vĩnh Viễn', '1.000.000 VNĐ')" class="bg-blue-600 hover:bg-blue-500 text-sm px-3 py-1 rounded font-bold text-white">Tạo Key</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Cột VIP -->
+                <div class="glass p-8 rounded-2xl border-t-4 border-purple-500 flex flex-col relative">
+                    <div class="absolute top-0 right-0 bg-purple-600 text-xs font-bold px-4 py-1 rounded-bl-lg">Khuyên dùng</div>
+                    <h3 class="text-2xl font-bold text-purple-400 mb-6 text-center">BẢN VIP</h3>
+                    <ul class="space-y-4 mb-8 flex-grow text-lg">
+                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
+                            <span>1 Ngày (50.000đ)</span> <button onclick="buyKey('VIP', '1 Ngày', '50.000 VNĐ')" class="bg-purple-600 hover:bg-purple-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
+                        </li>
+                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
+                            <span>7 Ngày (250.000đ)</span> <button onclick="buyKey('VIP', '7 Ngày', '250.000 VNĐ')" class="bg-purple-600 hover:bg-purple-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
+                        </li>
+                        <li class="flex justify-between items-center border-b border-gray-700 pb-2">
+                            <span>30 Ngày (1.000.000đ)</span> <button onclick="buyKey('VIP', '30 Ngày', '1.000.000 VNĐ')" class="bg-purple-600 hover:bg-purple-500 text-sm px-3 py-1 rounded font-bold">Tạo Key</button>
+                        </li>
+                        <li class="flex justify-between items-center border-b border-gray-700 pb-2 text-yellow-500">
+                            <span>Vĩnh Viễn (3.000.000đ)</span> <button onclick="buyKey('VIP', 'Vĩnh Viễn', '3.000.000 VNĐ')" class="bg-purple-600 hover:bg-purple-500 text-sm px-3 py-1 rounded font-bold text-white">Tạo Key</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= CỬA SỔ THANH TOÁN & NHẬN KEY ================= -->
+    <div id="paymentModal" class="fixed inset-0 modal-bg flex items-center justify-center hidden z-50 p-4">
+        <div class="glass max-w-lg w-full p-8 rounded-2xl shadow-2xl relative">
+            <h3 class="text-2xl font-bold text-green-400 mb-4 border-b border-gray-600 pb-2">Key Đã Được Tạo Tự Động!</h3>
+            
+            <div class="mb-4">
+                <p class="text-gray-300 text-sm mb-1">Gói đã chọn:</p>
+                <p id="modalPackage" class="font-bold text-xl text-yellow-400">Bản VIP - 30 Ngày</p>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-gray-300 text-sm mb-1">Key 32 ký tự của bạn (Vui lòng lưu lại):</p>
+                <div class="flex items-center space-x-2">
+                    <input type="text" id="generatedKey" readonly class="w-full bg-gray-900 border border-gray-700 text-green-400 font-mono text-center px-4 py-3 rounded-lg focus:outline-none cursor-text">
+                    <button onclick="copyKey()" class="bg-gray-700 hover:bg-gray-600 px-4 py-3 rounded-lg font-bold">Copy</button>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 p-4 rounded-lg mb-6 border border-gray-700">
+                <p class="text-sm text-gray-300 mb-2">Để kích hoạt Key này, vui lòng chuyển khoản <strong id="modalPrice" class="text-white"></strong> vào tài khoản:</p>
+                <p class="font-mono text-lg text-blue-400">Ngân hàng MB Bank</p>
+                <p class="font-mono text-lg text-blue-400">STK: 0123456789</p>
+                <p class="font-mono text-lg text-blue-400">Tên: NGUYEN VAN A</p>
+                <p class="text-sm mt-3 text-red-400">Nội dung chuyển khoản nhập ĐÚNG mã Key ở trên.</p>
+            </div>
+
+            <button onclick="closeModal()" class="w-full bg-red-600 hover:bg-red-500 py-3 rounded-lg font-bold transition">Đóng</button>
+        </div>
+    </div>
+
+    <script>
+        // Chức năng chuyển đổi Tab
+        function showSection(sectionId) {
+            document.getElementById('login').classList.add('hidden');
+            document.getElementById('store').classList.add('hidden');
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Thuật toán tạo ra Key ngẫu nhiên 32 ký tự (chữ hoa, chữ thường, số)
+        function generateRandom32CharKey() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let key = '';
+            const randomValues = new Uint32Array(32);
+            crypto.getRandomValues(randomValues);
+            for (let i = 0; i < 32; i++) {
+                key += chars[randomValues[i] % chars.length];
+            }
+            return key;
+        }
+
+        // Khi bấm nút tạo Key
+        function buyKey(type, duration, price) {
+            const newKey = generateRandom32CharKey();
+            document.getElementById('modalPackage').innerText = `Bản ${type} - ${duration}`;
+            document.getElementById('modalPrice').innerText = price;
+            document.getElementById('generatedKey').value = newKey;
+            document.getElementById('paymentModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').classList.add('hidden');
+        }
+
+        function copyKey() {
+            const keyText = document.getElementById('generatedKey');
+            keyText.select();
+            keyText.setSelectionRange(0, 99999); // Cho thiết bị di động
+            navigator.clipboard.writeText(keyText.value);
+            alert("Đã copy Key!");
+        }
+
+        // MÃ HÓA SHA-256 CHO ĐĂNG NHẬP
+        async function hashKey(key) {
+            const msgBuffer = new TextEncoder().encode(key);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // ĐĂNG NHẬP
+        async function verifyKey() {
+            const keyInput = document.getElementById('keyInput').value.trim();
+            const btn = document.getElementById('loginBtn');
+            
+            if (keyInput.length !== 32) {
+                alert("❌ Lỗi: Key phải có độ dài chính xác 32 ký tự chữ và số!");
+                return;
+            }
+
+            btn.innerText = "Đang kiểm tra...";
+            btn.disabled = true;
+
+            try {
+                const hashedUserKey = await hashKey(keyInput);
+                const rawUrl = 'https://raw.githubusercontent.com/loffy327/TEST/refs/heads/main/key.txt';
+                const response = await fetch(rawUrl);
+                if (!response.ok) throw new Error("Không tìm thấy file hệ thống hoặc bị chặn kết nối.");
+                
+                const text = await response.text();
+                const validHashes = text.split('\n').map(line => line.trim());
+
+                if (validHashes.includes(hashedUserKey)) {
+                    alert("✅ Kích hoạt thành công! Key hoàn toàn hợp lệ.");
+                } else {
+                    alert("❌ Lỗi: Key không tồn tại, chưa thanh toán, hoặc đã hết hạn.");
+                }
+            } catch (error) {
+                alert("Lỗi máy chủ: " + error.message);
+            } finally {
+                btn.innerText = "KÍCH HOẠT VÀ ĐĂNG NHẬP";
+                btn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>
